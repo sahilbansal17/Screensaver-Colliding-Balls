@@ -1,0 +1,81 @@
+\documentclass[]{article}
+\usepackage[left=0.7in,right=0.7in,top=0.9in,bottom=0.5in]{geometry}
+
+%opening
+\title{\textbf{COP290 : Assignment 1 \\ Design Document}}
+\author{Sahil Bansal (2016CSJ0008) \& Sahil Singh(2016CSJ0025)}
+
+\begin{document}
+
+\maketitle
+
+\section{\LARGE Overall Design :}
+\Large
+\begin{itemize}
+	\item  An object-oriented design is intended to be followed where all the properties of the screen are defined in a class \textbf{Screen} including all the GUI options provided.
+	\item Similarly, there is a class for \textbf{Ball} containing all the information about a ball and the related functions to detect and handle collisions.
+	\item The third main class named \textbf{Physics} is the one where we define functions to perform the velocity calculations using vector algebra, so that the ball position after collision can be conveniently updated using those.
+	\item The movement of balls is controlled by \textbf{threads} and the communication between them is described in separate section.
+\end{itemize}  
+
+\section{\LARGE Sub-Components :}
+
+\subsection{GUI :}
+\Large The class \textbf{Screen} contains the properties of the box in which the balls are present (width, height \& depth). It also includes all the GUI options available including \textbf{mouse selection} and \textbf{slider/buttons} to update the speed of the balls.
+
+\subsection{Balls :}
+\Large This class defines all the properties of the balls and the related functions. The constructor will intialize the properties(center, velocity, radius and color) randomly whereas the mass is kept proportional to the radius of the ball for convenience. 
+
+\subsection{Physics :}
+\Large The physics is handled by the following equations which are obtained after conserving the momentum along the common normal direction ($\hat{n}$) and using the coefficient of restitution equation. 
+\newline
+The center of the balls are represented by vectors $\vec{r_{1}}$ \& $\vec{r_{2}}$.
+\newline
+So, the direction of common normal is given by :
+\[\hat{n} = \frac{\vec{r_{1}}-\vec{r_{2}}}{\left \| \vec{r_{1}}-\vec{r_{2}} \right \|}\]
+The final velocities ($\vec{v_{1}}$ \& $\vec{v_{2}}$) can be then expressed in terms of initial velocities ($\vec{u_{1}}$ \& $\vec{u_{2}}$), masses of the balls ($m_{1} $ \&  $m_{2}$) (considering the coefficient of restitution $e = 1$) as :
+\[\vec{v_{1}} = \vec{u_{1}}+\Bigg(\frac{2m_{2}}{m_{1}+m_{2}}(\vec{u_{1}}-\vec{u_{2}}).\hat{n}\Bigg)\hat{n} \ \ \ \ \ \ \ \ \ \ \ \ \rightarrow (1)\]
+
+\[\vec{v_{2}} = \vec{u_{2}}+\Bigg(\frac{2m_{1}}{m_{1}+m_{2}}(\vec{u_{2}}-\vec{u_{1}}).\hat{n}\Bigg)\hat{n} \ \ \ \ \ \ \ \ \ \ \ \ \rightarrow (2)\]
+All tools and functions to do these computations like dot product, are defined in the Physics class. 
+
+\section{\LARGE Testing Sub-Components :}
+\subsection{GUI :}
+\Large 
+\begin{itemize}
+	\item The GUI will be tested by seeing that the box is rendered correctly.
+	\item The balls are created with random positions, speed and color. Hence, this should be seen in GUI.
+	\item Upon selection of a ball by mouse click, it must become white.
+\end{itemize}
+\subsection{Physics :}
+\Large\begin{itemize}
+	\item The functions can be checked by creating a test file which calls them with some parameters and it can be verified whether the output is correct.
+\end{itemize}
+\subsection{Balls :}
+\Large\begin{itemize}
+	\item The collision detection function can be checked to function properly since it will change the color of both the balls (if ball - ball collision) to \textbf{black} (or some other color which is not reserved for any ball). If it is a ball to wall collision, then also the color of the ball will be changed.
+	\item The speed updation functions can be verified by printing the updated speed on the console whenever the slider is moved. It can then be seen whether the ball speed is in sync with the slider.
+\end{itemize}
+
+\section{\LARGE Sub-Component Interaction :}
+\subsection{Interaction between balls :} 
+\Large
+Whenever the balls are close enough, i.e. their center to center distance is less or equal to sum of their radii, the ball collision handler function in Balls class is called which in turn calls the update velocity function in Physics class to get the appropriate velocities for the balls which are then updated. 
+
+\subsection{Interaction between ball and wall :}
+\Large
+When the perpendicular distance between the wall and the center of the ball is less than or equal to its radius, the wall collision handler function in Balls class is called. 
+
+\section{\LARGE Thread Interaction :}
+\Large Each thread controls a ball and in starting, they are in active state. To modify the position and velocity of the ball, they try to pick mutex lock by calling the update velocity (when collisions occurs or slider is moved) and update position functions. The threads are synchronized so that the state of the balls keep on updating. 
+This is the barrier mode of communication. It is being used since it is easy to implement.
+
+
+\section{\LARGE Variable Ball Speeds :}
+\Large To update the speed of a ball, it has to be selected with a mouse click after which its color will be changed to white using a function in the Screen class related to mouse input. A slider is displayed on the screen, which then shows the current speed of the ball and then it can be moved to update the speed accordingly. This happens since the velocity variable of ball object is updated. A limit is kept on the maximum speed of the ball due to a limited size of slider, moreover to make the graphics look smooth. Also, a minimum speed is set so that the balls do not move very slowly.
+
+\section{\LARGE Additional Features :}
+\Large\textbf{Counter to display average no. of collisions per second :}\\
+Each time a collision is encountered, a counter will be incremented. Also, using time library in C++, we will keep track of how much time have been passed since the start of the program. So, we can find the average no. of collisions and display them using a function in Screen class.
+\end{document}
+
