@@ -12,13 +12,13 @@ public:
 	ball(){
 		x = 0.1;
 		y = 0.1;
-		z = 0.0;
+		z = -10.0;
 		r = 0.5;
 		g = 0.5;
 		b = 1.0;
 		vx = 0.01;
 		vy = -0.005;
-		vz = 0.0;
+		vz = 0.01;
 		rad = 0.25;
 	}
 	// getter functions

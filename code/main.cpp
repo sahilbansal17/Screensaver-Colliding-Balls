@@ -16,7 +16,7 @@ void reshape(int x, int y){
     //Near clipping plane distance: 0.5
     //Far clipping plane distance: 20.0
      
-    // gluPerspective(60.0,(GLdouble)x/(GLdouble)y,0.0,10.0);
+    gluPerspective(60.0,(GLdouble)x/(GLdouble)y,0.1,1000.0);
     glMatrixMode(GL_MODELVIEW); 
     glViewport(0,0,x,y);  //Use the whole window for rendering
 }
