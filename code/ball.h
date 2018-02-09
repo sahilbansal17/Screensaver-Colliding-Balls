@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 using namespace std;
 
 class ball{
@@ -10,16 +11,31 @@ private:
 public:
 	// constructor
 	ball(){
-		x = 0.1;
-		y = 0.1;
+		random_device rd; //non-deterministic engine, to seed mt engine
+		mt19937 gen(rd()); //mersenne-twister engine
+
+		// coordiantes for center
+		uniform_real_distribution<float> coordinates(-1.0, 1.0); //uniform distribution
+		x = coordinates(gen);
+		y = coordinates(gen);
+
+		// speed in each direction
+		uniform_real_distribution<float> speed(0.0, 0.05); //uniform distribution
+		vx = speed(gen);
+		vy = speed(gen);
+
+		// color values
+		uniform_real_distribution<float> colors(0.0, 1.0); //uniform distribution
+		r = colors(gen);
+		g = colors(gen);
+		b = colors(gen);
+
+		// radius
+		rad = 0.1;
+
+		// working in 2d
 		z = 0.0;
-		r = 0.5;
-		g = 0.5;
-		b = 1.0;
-		vx = 0.01;
-		vy = -0.005;
 		vz = 0.0;
-		rad = 0.25;
 	}
 	// getter functions
 	float getRadius(){
