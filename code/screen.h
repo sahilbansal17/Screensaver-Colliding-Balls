@@ -15,7 +15,29 @@ void* tempDrawBalls(void* ballPtr){
   cout << b->getCenterX();
 }
 
-void* drawBalls(void* ballPtr){
+void drawBall(ball *b){
+
+  float x = b->getCenterX();
+  float y = b->getCenterY();
+  float z = b->getCenterZ();
+
+  float r = b->getRed();
+  float g = b->getGreen();
+  float blu = b->getBlue();
+
+  float rad = b->getRadius();
+  glLoadIdentity();
+  glTranslatef( x, y, z);
+  glBegin(GL_POLYGON);
+
+  glColor3f(r,g,blu); // give color to the sphere
+
+  glutSolidSphere(rad, 50, 50);
+
+  glEnd();
+}
+
+void* controlBall(void* ballPtr){
 
   ball * b = (ball*) ballPtr;
 
@@ -65,17 +87,7 @@ void* drawBalls(void* ballPtr){
   b->setCenterY(y);
   b->setCenterZ(z);
 
-  //b->printCenter();
-
-  glLoadIdentity();
-  glTranslatef( x, y, z);
-  glBegin(GL_POLYGON);
-
-  glColor3f(r,g,blu); // give color to the sphere
-
-  glutSolidSphere(rad, 50, 50);
-
-  glEnd();
+  // b->printCenter();
 }
 
 void drawCube(){
@@ -139,9 +151,11 @@ void drawCube(){
 
   int bRet1; // ball 1 returning  value
 
-  pthread_create(&ball_1, NULL, &drawBalls, (void*) b);
+  pthread_create(&ball_1, NULL, &controlBall, (void*) b);
 
   pthread_join(ball_1, NULL);
+
+  drawBall(b);
 
   glutSwapBuffers();
 }
