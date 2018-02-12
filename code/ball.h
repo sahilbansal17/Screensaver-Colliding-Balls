@@ -10,6 +10,7 @@ private:
 public:
 	// constructor
 	ball(){
+<<<<<<< Updated upstream
 		x = 0.1;
 		y = 0.1;
 		z = -10.0;
@@ -20,6 +21,47 @@ public:
 		vy = -0.005;
 		vz = 0.01;
 		rad = 0.25;
+=======
+		random_device rd; //non-deterministic engine, to seed mt engine
+		mt19937 gen(rd()); //mersenne-twister engine
+
+		// coordiantes for center
+		uniform_real_distribution<float> coordinates(-1.0, 1.0); //uniform distribution
+		x = coordinates(gen);
+		y = coordinates(gen);
+
+		// speed in each direction
+		uniform_real_distribution<float> speed(0.0, 0.02); //uniform distribution
+		vx = speed(gen);
+		vy = speed(gen);
+
+		// color values
+		uniform_real_distribution<float> colors(0.0, 1.0); //uniform distribution
+		r = colors(gen);
+		g = colors(gen);
+		b = colors(gen);
+
+		// radius
+		rad = 0.1;
+
+		// working in 2d
+		z = -6.0;
+		vz = 0.0;
+
+		// to make sure that ball does not go beyond the boundaries
+		if(x > 1-rad){
+	    x = 1 - rad;
+	  }
+		else if(x < -1+rad){
+			x = -1 + rad;
+		}
+	  if(y > 1-rad){
+	    y = 1 - rad;
+	  }
+		else if(y < -1+rad){
+			y = -1 + rad;
+		}
+>>>>>>> Stashed changes
 	}
 	// getter functions
 	float getRadius(){

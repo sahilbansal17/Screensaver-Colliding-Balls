@@ -15,9 +15,15 @@ void reshape(int x, int y){
     //Angle of view: 60 degrees
     //Near clipping plane distance: 0.5
     //Far clipping plane distance: 20.0
+<<<<<<< Updated upstream
      
     gluPerspective(60.0,(GLdouble)x/(GLdouble)y,0.1,1000.0);
     glMatrixMode(GL_MODELVIEW); 
+=======
+
+    gluPerspective(20.0,(GLdouble)x/(GLdouble)y,0.0,100.0);
+    glMatrixMode(GL_MODELVIEW);
+>>>>>>> Stashed changes
     glViewport(0,0,x,y);  //Use the whole window for rendering
 }
 
