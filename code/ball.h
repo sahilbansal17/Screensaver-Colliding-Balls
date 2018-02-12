@@ -36,6 +36,20 @@ public:
 		// working in 2d
 		z = 0.0;
 		vz = 0.0;
+
+		// to make sure that ball does not go beyond the boundaries
+		if(x > 1-rad){
+	    x = 1 - rad;
+	  }
+		else if(x < -1+rad){
+			x = -1 + rad;
+		}
+	  if(y > 1-rad){
+	    y = 1 - rad;
+	  }
+		else if(y < -1+rad){
+			y = -1 + rad;
+		}
 	}
 	// getter functions
 	float getRadius(){

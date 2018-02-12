@@ -8,23 +8,26 @@
 
 GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
-ball **b;
-int num_balls;
+ball **b; // double pointer to ball
+int num_balls; // number of balls
 
+// initialize balls
 void initBalls(int n){
-  num_balls = n;
-  b = new ball*[n];
+  num_balls = n; // assign proper value to global variable
+  b = new ball*[n]; // b points to array of pointers
   for(int i = 0 ; i < n ; i++){
-    b[i] = new ball();
+    b[i] = new ball(); // allocate memory to each ball
   }
 }
 
+// temporary function to debug threads
 void* tempDrawBalls(void* ballPtr){
   ball * b = (ball *) ballPtr;
   cout << "Ball created";
   cout << b->getCenterX();
 }
 
+// function to render ball on screen
 void drawBall(ball *b){
 
   float x = b->getCenterX();
@@ -47,6 +50,7 @@ void drawBall(ball *b){
   glEnd();
 }
 
+// function to control ball coordinates
 void* controlBall(void* ballPtr){
 
   ball * b = (ball*) ballPtr;
@@ -159,11 +163,13 @@ void drawCube(){
 
   vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
-  vector <int> bRet1(num_balls); // balls returning value
+  vector <int> bRet(num_balls); // to store values returned by each thread
 
   for(int i = 0 ; i < num_balls; i ++){
-    bRet1[i] = pthread_create(&balls[i], NULL, &controlBall, (void*)b[i]);
+    bRet[i] = pthread_create(&balls[i], NULL, &controlBall, (void*)b[i]); // create a thread
+
     pthread_join(balls[i], NULL);
+
     drawBall(b[i]);
   }
 
