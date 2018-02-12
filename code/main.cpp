@@ -27,6 +27,12 @@ void reshape(int x, int y){
 
 int main(int argc, char** argv){
 
+  int n; // number of balls
+
+  cin >> n;
+
+  initBalls(n); // initialize the properties of all the balls
+
   glutInit(&argc, argv); // initialize glut
 
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); // create double buffer window

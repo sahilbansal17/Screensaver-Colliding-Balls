@@ -1,5 +1,6 @@
 #include  "ball.h"
 #include <pthread.h>
+#include <vector>
 #define SCREEN_WIDTH 500
 #define SCREEN_HEIGHT 500
 #define SCREEN_X 500
@@ -7,7 +8,16 @@
 
 GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
-ball* b = new ball(); // creating a new ball
+ball **b;
+int num_balls;
+
+void initBalls(int n){
+  num_balls = n;
+  b = new ball*[n];
+  for(int i = 0 ; i < n ; i++){
+    b[i] = new ball();
+  }
+}
 
 void* tempDrawBalls(void* ballPtr){
   ball * b = (ball *) ballPtr;
@@ -147,15 +157,15 @@ void drawCube(){
   // zRotated += 0.1;
   // glEnd();
 
-  pthread_t ball_1; // create a ball thread
+  vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
-  int bRet1; // ball 1 returning  value
+  vector <int> bRet1(num_balls); // balls returning value
 
-  pthread_create(&ball_1, NULL, &controlBall, (void*) b);
-
-  pthread_join(ball_1, NULL);
-
-  drawBall(b);
+  for(int i = 0 ; i < num_balls; i ++){
+    bRet1[i] = pthread_create(&balls[i], NULL, &controlBall, (void*)b[i]);
+    pthread_join(balls[i], NULL);
+    drawBall(b[i]);
+  }
 
   glutSwapBuffers();
 }
