@@ -6,23 +6,27 @@
 #include "screen.h"
 
 void init(void){
-  glClearColor(0,0,0,0);
+  // initialize projection matrix
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  // initialize modelview matrix
+  glLoadIdentity();
+  // initialize clear color
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // R, G, B, Alpha
 }
 
 void reshape(int x, int y){
     if (y == 0 || x == 0) return;  // empty screen
 
-    glMatrixMode(GL_PROJECTION); // set a projection matrix
+    glMatrixMode(GL_PROJECTION);
+    // angle of view: 45 degrees
+    // near clipping plane distance: 0.0
+    // far clipping plane distance: 1000.0
+    gluPerspective(45.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
 
-    glLoadIdentity();
+    // glMatrixMode(GL_MODELVIEW);
 
-    //Angle of view: 60 degrees
-    //Near clipping plane distance: 0.5
-    //Far clipping plane distance: 20.0
-
-    // gluPerspective(60.0,(GLdouble)x/(GLdouble)y,0.0,10.0);
-    glMatrixMode(GL_MODELVIEW);
-    glViewport(0,0,x,y);  //Use the whole window for rendering
+    glViewport(0, 0, x, y);  // use the whole window for rendering, 0, 0 specify the lower left side
 }
 
 int main(int argc, char** argv){
@@ -40,6 +44,7 @@ int main(int argc, char** argv){
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   glutInitWindowPosition(SCREEN_X,SCREEN_Y);
   glutCreateWindow("ScreenSaver Colliding Balls");
+  // glutFullScreen(); // make the window full screen
 
   init(); // post window/context creation initialization
 

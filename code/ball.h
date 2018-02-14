@@ -117,7 +117,18 @@ public:
 		vector <float> c2 = b2->getCenter();
 
 		float rad_check = rad + b2->getRadius(); // currently same => 0.1 + 0.1 = 0.2
-		if(centerToCenter(c1, c2) <= rad_check){
+		if(centerToCenter(c1, c2) == rad_check){
+			return 1;
+		}
+		else if(centerToCenter(c1, c2) < rad_check){
+			// need to make sure that c1c2 = r1 + r2 so that balls do not stick together after the position gets updated next time
+
+			vector <float> cn = getCommonNormal(c1, c2);
+			c2 = diff(c1, mulConst(cn, rad_check));
+
+			// c2[2] += 0.0001;
+			b2->setCenter(c2[0], c2[1], c2[2]);
+
 			return 1;
 		}
 		return 0;

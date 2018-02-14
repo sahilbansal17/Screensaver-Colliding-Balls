@@ -6,7 +6,75 @@
 #define SCREEN_X 500
 #define SCREEN_Y 100
 
-GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
+// #ifdef __APPLE__
+// #ifndef PTHREAD_BARRIER_H_
+// #define PTHREAD_BARRIER_H_
+//
+// #include <pthread.h>
+// #include <errno.h>
+//
+// typedef int pthread_barrierattr_t;
+// typedef struct
+// {
+//     pthread_mutex_t mutex;
+//     pthread_cond_t cond;
+//     int count;
+//     int tripCount;
+// } pthread_barrier_t;
+//
+//
+// int pthread_barrier_init(pthread_barrier_t *barrier, const pthread_barrierattr_t *attr, unsigned int count)
+// {
+//     if(count == 0)
+//     {
+//         errno = EINVAL;
+//         return -1;
+//     }
+//     if(pthread_mutex_init(&barrier->mutex, 0) < 0)
+//     {
+//         return -1;
+//     }
+//     if(pthread_cond_init(&barrier->cond, 0) < 0)
+//     {
+//         pthread_mutex_destroy(&barrier->mutex);
+//         return -1;
+//     }
+//     barrier->tripCount = count;
+//     barrier->count = 0;
+//
+//     return 0;
+// }
+//
+// int pthread_barrier_destroy(pthread_barrier_t *barrier)
+// {
+//     pthread_cond_destroy(&barrier->cond);
+//     pthread_mutex_destroy(&barrier->mutex);
+//     return 0;
+// }
+//
+// int pthread_barrier_wait(pthread_barrier_t *barrier)
+// {
+//     pthread_mutex_lock(&barrier->mutex);
+//     ++(barrier->count);
+//     if(barrier->count >= barrier->tripCount)
+//     {
+//         barrier->count = 0;
+//         pthread_cond_broadcast(&barrier->cond);
+//         pthread_mutex_unlock(&barrier->mutex);
+//         return 1;
+//     }
+//     else
+//     {
+//         pthread_cond_wait(&barrier->cond, &(barrier->mutex));
+//         pthread_mutex_unlock(&barrier->mutex);
+//         return 0;
+//     }
+// }
+//
+// #endif // PTHREAD_BARRIER_H_
+// #endif // __APPLE__
+
+// GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
 ball **b; // double pointer to ball
 int num_balls; // number of balls
@@ -19,6 +87,10 @@ void initBalls(int n){
   for(int i = 0 ; i < n ; i++){
     b[i] = new ball(); // allocate memory to each ball
   }
+  // b[0] = new ball(0.5, 0, 0, 0.1, 0, 0);
+  // b[1] = new ball(0.1, 0, 0, 0.0, 0, 0);
+  // b[2] = new ball(-0.5, 0, 0, 0.0, 0, 0);
+  // b[3] = new ball(0.9, 0, 0, 0.0, 0, 0);
 }
 
 // temporary function to debug threads
@@ -58,16 +130,28 @@ void* controlBallWall(void* ballPtr){
   // get radius of the ball
   float rad = b->getRadius();
 
+  // to make sure that ball does not go beyond the boundaries initially (2d boundary)
+  for(int i = 0 ; i < 2 ; i++){
+    if(center[i] > 1-rad){
+      center[i] = 1 - rad;
+    }
+    else if(center[i] < -1+rad){
+      center[i] = -1 + rad;
+    }
+  }
   // update the center of the ball using velocities, detecting collision with the walls
-  for(int i = 0 ; i < 3 ; i++){
-    if(center[i] <= 1-rad && center[i] >= -1+rad){
-      center[i] += vel[i];
+  for(int i = 0 ; i < 2 ; i++){
+    if(center[i] + vel[i] <= 1-rad && center[i] + vel[i] >= -1+rad){
+        center[i] += vel[i];
     }
     else{
       center[i] -= vel[i];
       vel[i] = -1*vel[i];
     }
+
   }
+
+  // pthread_barrier_wait(&barrier);
 
   //update the center of the balls
   b->setCenter(center[0], center[1], center[2]);
@@ -110,13 +194,23 @@ void controlBallBall(ball* b1, ball* b2){
 
 void drawCube(){
 
-  glMatrixMode(GL_MODELVIEW);
-
   glClear(GL_COLOR_BUFFER_BIT); // clear the buffer
+
+  glMatrixMode(GL_MODELVIEW);
 
   vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
   vector <int> bRet(num_balls); // to store values returned by each thread
+
+  // pthread_barrier_init(&barrier, 0, num_balls);
+
+  // check for ball to ball collsions and update velocities
+  // also makes sure that initially no two balls are generated at same place
+  for(int i = 0 ; i < num_balls ; i ++){
+    for (int j = i+1; j < num_balls; j++){
+      controlBallBall(b[i], b[j]);
+    }
+  }
 
   for(int i = 0 ; i < num_balls ; i ++){
     bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
@@ -125,13 +219,7 @@ void drawCube(){
     pthread_join(balls[i], NULL);
 
   }
-
-  // check for ball to ball collsions and update velocities
-  for(int i = 0 ; i < num_balls ; i ++){
-    for (int j = i+1; j < num_balls; j++){
-      controlBallBall(b[i], b[j]);
-    }
-  }
+  // pthread_barrier_destroy(&barrier);
 
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
