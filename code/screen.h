@@ -76,18 +76,20 @@ void* controlBallWall(void* ballPtr){
   // b->printCenter();
 }
 
-// void controlBallBall(ball* b1, ball* b2){
-//
-//   // check whether collision has occurred
-//   bool res = b1->checkBallBall(b2);
-//
-//   if(res == 1){
-//     // balls have collided
-//     // udpate their velocities
-//     b1->updateVel(b2);
-//   }
-//   return ;
-// }
+void controlBallBall(ball* b1, ball* b2){
+
+  // check whether collision has occurred
+  bool res = b1->checkBallBall(b2);
+
+  if(res == 1){
+    // balls have collided
+    // udpate their velocities
+
+    // cout << "Balls collide.\n";
+    b1->updateVel(b2);
+  }
+  return ;
+}
 
 void drawCube(){
 
@@ -99,20 +101,24 @@ void drawCube(){
 
   vector <int> bRet(num_balls); // to store values returned by each thread
 
-  for(int i = 0 ; i < num_balls; i ++){
+  for(int i = 0 ; i < num_balls ; i ++){
     bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
     // controlBallWall checks for ball to wall collisions and updates the coordinates
 
     pthread_join(balls[i], NULL);
 
-    drawBall(b[i]);
   }
 
-  // for(int i = 0 ; i < num_balls; i ++){
-  //   for (int j = i+1; j < num_balls; j++){
-  //     controlBallBall(balls[i], balls[j]);
-  //   }
-  // }
+  // check for ball to ball collsions and update velocities
+  for(int i = 0 ; i < num_balls ; i ++){
+    for (int j = i+1; j < num_balls; j++){
+      controlBallBall(b[i], b[j]);
+    }
+  }
+
+  for(int i = 0 ; i < num_balls ; i++){
+    drawBall(b[i]);
+  }
 
   glutSwapBuffers();
 }

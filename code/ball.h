@@ -16,7 +16,7 @@ public:
 		center = vector <float> (3);
 		color = vector <float> (3);
 		vel = vector <float> (3);
-		
+
 		random_device rd; //non-deterministic engine, to seed mt engine
 		mt19937 gen(rd()); //mersenne-twister engine
 
@@ -88,22 +88,43 @@ public:
 
 	// checking whether ball to ball collision has occurred
 	bool checkBallBall(ball* b2){
-		vector <float> c1 = center; // get coordinates of calling ball b1
-
+		// get coordinates of calling ball b1
+		vector <float> c1 = center;
 		// get coordinates of ball b2
 		vector <float> c2 = b2->getCenter();
 
 		float rad_check = rad + b2->getRadius(); // currently same => 0.1 + 0.1 = 0.2
-
 		if(centerToCenter(c1, c2) <= rad_check){
 			return 1;
 		}
 		return 0;
 	}
 
-	// void updateVel(ball* b2){
-	// 	// get the vectors r1 and r2
-	// 	vector <float> r1 = center;
-  //
-	// }
+	void updateVel(ball* b2){
+		// get the vectors r1 and r2
+		vector <float> r1 = center;
+		vector <float> r2 = b2->getCenter();
+		// get the velocities
+		vector <float> u1 = vel;
+		vector <float> u2 = b2->getVel();
+		// common normal of r1,r2
+		vector <float> cn = getCommonNormal(r1, r2);
+
+		// assuming m1 = m2
+		// v1 = u1 + ((u1 - u2).cn)cn
+		// v2 = u2 + ((u2 - u1).cn)cn
+		vector <float> u1u2 = diff(u1, u2);
+		vector <float> u2u1 = diff(u2, u1);
+		float u1Mul = dotProd(u1u2, cn);
+		float u2Mul = dotProd(u2u1, cn);
+		vector <float> u1Add = mulConst(cn, u1Mul);
+		vector <float> u2Add = mulConst(cn, u2Mul);
+
+		vector <float> v1 = add(u1, u1Add);
+		vector <float> v2 = add(u2, u2Add);
+
+		// update velocities
+		vel = v1;
+		b2->setVel(v2[0], v2[1], v2[2]);
+	}
 };
