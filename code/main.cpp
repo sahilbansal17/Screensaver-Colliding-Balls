@@ -18,11 +18,13 @@ void init(void){
 void reshape(int x, int y){
     if (y == 0 || x == 0) return;  // empty screen
 
-    glMatrixMode(GL_PROJECTION);
+    // glMatrixMode(GL_PROJECTION);
+    
     // angle of view: 45 degrees
     // near clipping plane distance: 0.0
     // far clipping plane distance: 1000.0
-    gluPerspective(45.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
+    
+    // gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
 
     // glMatrixMode(GL_MODELVIEW);
 
