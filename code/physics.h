@@ -55,7 +55,7 @@ vector <float> getCommonNormal(vector <float> r1, vector <float> r2){
   // need to multiply with 1/(|r1-r2|)
   float factor = centerToCenter(r1, r2);
   for(int i = 0 ; i < 3 ; i++){
-    res[i] = res[i]*factor;
+    res[i] = res[i]*1/factor;
   }
   return res;
 }

@@ -86,7 +86,24 @@ void controlBallBall(ball* b1, ball* b2){
     // udpate their velocities
 
     // cout << "Balls collide.\n";
+    // cout << "Intial:\n";
+    // vector <float> c1 = b1->getCenter(), c2 = b2->getCenter();
+    // vector <float> u1 = b1->getVel(), u2 = b2->getVel();
+    // for(int i = 0 ; i < 2 ; i ++){
+    //   cout << "x_1_" << i << " " << c1[i] << "\n";
+    //   cout << "x_2_" << i << " " << c2[i] << "\n";
+    //   cout << "u_1_" << i << " " << u1[i] << "\n";
+    //   cout << "u_2_" << i << " " << u2[i] << "\n";
+    // }
+
     b1->updateVel(b2);
+
+    // cout << "Final:\n";
+    // vector <float> v1 = b1->getVel(), v2 = b2->getVel();
+    // for(int i = 0 ; i < 3 ; i ++){
+    //   cout << "v_1_" << i << " " << v1[i] << "\n";
+    //   cout << "v_2_" << i << " " << v2[i] << "\n";
+    // }
   }
   return ;
 }

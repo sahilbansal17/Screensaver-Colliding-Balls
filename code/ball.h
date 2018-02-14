@@ -32,6 +32,9 @@ public:
 			vel[i] = speed(gen);
 		}
 
+		// vel[1] = 0 ; // for debugging
+		// center[1] = 0.5; // for debugging
+
 		// color values
 		uniform_real_distribution<float> colors(0.0, 1.0); //uniform distribution
 		for (int i = 0 ; i < 3 ; i ++){
@@ -54,6 +57,26 @@ public:
 				center[i] = -1 + rad;
 			}
 		}
+	}
+
+	ball(float x1, float y1, float z1, float vx, float vy, float vz){
+		center = vector <float> (3);
+		color = vector <float> (3);
+		vel = vector <float> (3);
+		center[0] = x1;
+		center[1] = y1;
+		center[2] = z1;
+		vel[0] = vx;
+		vel[1] = vy;
+		vel[2] = vz;
+		random_device rd; //non-deterministic engine, to seed mt engine
+		mt19937 gen(rd()); //mersenne-twister engine
+		uniform_real_distribution<float> colors(0.0, 1.0); //uniform distribution
+		for (int i = 0 ; i < 3 ; i ++){
+			color[i] = colors(gen);
+		}
+		// radius
+		rad = 0.1;
 	}
 	// getter functions
 	float getRadius(){
@@ -111,17 +134,16 @@ public:
 		vector <float> cn = getCommonNormal(r1, r2);
 
 		// assuming m1 = m2
-		// v1 = u1 + ((u1 - u2).cn)cn
-		// v2 = u2 + ((u2 - u1).cn)cn
+		// v1 = u1 - ((u1 - u2).cn)cn
+		// v2 = u2 - ((u2 - u1).cn)cn
 		vector <float> u1u2 = diff(u1, u2);
 		vector <float> u2u1 = diff(u2, u1);
 		float u1Mul = dotProd(u1u2, cn);
 		float u2Mul = dotProd(u2u1, cn);
 		vector <float> u1Add = mulConst(cn, u1Mul);
 		vector <float> u2Add = mulConst(cn, u2Mul);
-
-		vector <float> v1 = add(u1, u1Add);
-		vector <float> v2 = add(u2, u2Add);
+		vector <float> v1 = diff(u1, u1Add);
+		vector <float> v2 = diff(u2, u2Add);
 
 		// update velocities
 		vel = v1;
