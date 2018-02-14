@@ -10,6 +10,7 @@ GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
 ball **b; // double pointer to ball
 int num_balls; // number of balls
+// pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
 void initBalls(int n){
@@ -24,85 +25,69 @@ void initBalls(int n){
 void* tempDrawBalls(void* ballPtr){
   ball * b = (ball *) ballPtr;
   cout << "Ball created";
-  cout << b->getCenterX();
+  // cout << b->getCenterX();
 }
 
 // function to render ball on screen
 void drawBall(ball *b){
 
-  float x = b->getCenterX();
-  float y = b->getCenterY();
-  float z = b->getCenterZ();
-
-  float r = b->getRed();
-  float g = b->getGreen();
-  float blu = b->getBlue();
-
+  vector <float> center = b->getCenter();
+  vector <float> color = b->getColor();
   float rad = b->getRadius();
+
   glLoadIdentity();
-  glTranslatef( x, y, z);
+  glTranslatef(center[0], center[1], center[2]);
+
   glBegin(GL_POLYGON);
-
-  glColor3f(r,g,blu); // give color to the sphere
-
+  glColor3f(color[0], color[1], color[2]); // give color to the sphere
   glutSolidSphere(rad, 50, 50);
-
   glEnd();
 }
 
 // function to control ball coordinates
-void* controlBall(void* ballPtr){
+void* controlBallWall(void* ballPtr){
 
   ball * b = (ball*) ballPtr;
 
   // get center of the ball
-  float x = b->getCenterX();
-  float y = b->getCenterY();
-  float z = b->getCenterZ();
-
+  vector <float> center = b->getCenter();
   // get velocities of the ball
-  float vx = b->getVelX();
-  float vy = b->getVelY();
-  float vz = b->getVelZ();
-
+  vector <float> vel = b->getVel();
   // get color values of the ball
-  float r = b->getRed();
-  float g = b->getGreen();
-  float blu = b->getBlue();
-
+  vector <float> color = b->getColor();
   // get radius of the ball
   float rad = b->getRadius();
 
   // update the center of the ball using velocities, detecting collision with the walls
-  if(x <= 1-rad && x >= -1+rad){
-    x += vx;
-  }
-  else{
-    x -= vx;
-    b->setVelX(-vx);
-  }
-  if(y <= 1-rad && y >= -1+rad){
-    y += vy;
-  }
-  else{
-    y -= vy;
-    b->setVelY(-vy);
-  }
-  if(z <= 1-rad && z >= -1+rad){
-    z += vz;
-  }
-  else{
-    z -= vz;
-    b->setVelZ(-vz);
+  for(int i = 0 ; i < 3 ; i++){
+    if(center[i] <= 1-rad && center[i] >= -1+rad){
+      center[i] += vel[i];
+    }
+    else{
+      center[i] -= vel[i];
+      vel[i] = -1*vel[i];
+    }
   }
 
   //update the center of the balls
-  b->setCenterX(x);
-  b->setCenterY(y);
-  b->setCenterZ(z);
-
+  b->setCenter(center[0], center[1], center[2]);
+  // update the velocities of the balls if req
+  b->setVel(vel[0], vel[1], vel[2]);
   // b->printCenter();
 }
+
+// void controlBallBall(ball* b1, ball* b2){
+//
+//   // check whether collision has occurred
+//   bool res = b1->checkBallBall(b2);
+//
+//   if(res == 1){
+//     // balls have collided
+//     // udpate their velocities
+//     b1->updateVel(b2);
+//   }
+//   return ;
+// }
 
 void drawCube(){
 
@@ -110,68 +95,24 @@ void drawCube(){
 
   glClear(GL_COLOR_BUFFER_BIT); // clear the buffer
 
-  // glLoadIdentity();
-
-  // glTranslatef(0.0,0.0,-10.0);
-
-  // glRotatef(xRotated,-1.0,0.0,0.0); // rotation about X axis
-  // glRotatef(yRotated,0.0,-1.0,0.0); // rotation about Y axis
-  // glRotatef(zRotated,0.0,0.0,-1.0); // rotation about Z axis
-
-  // glBegin(GL_QUADS); // Draw The Cube Using quads
-
-  // glColor3f(0.0f,1.0f,0.0f);    // Color Blue
-  // glVertex3f( 02.0f, 02.0f,-02.0f);    // Top Right Of The Quad (Top)
-  // glVertex3f(-02.0f, 02.0f,-02.0f);    // Top Left Of The Quad (Top)
-  // glVertex3f(-02.0f, 02.0f, 02.0f);    // Bottom Left Of The Quad (Top)
-  // glVertex3f( 02.0f, 02.0f, 02.0f);    // Bottom Right Of The Quad (Top)
-
-  // glColor3f(1.0f,1.0f,0.0f);    // Color Orange
-  // glVertex3f( 02.0f,-02.0f, 02.0f);    // Top Right Of The Quad (Bottom)
-  // glVertex3f(-02.0f,-02.0f, 02.0f);    // Top Left Of The Quad (Bottom)
-  // glVertex3f(-02.0f,-02.0f,-02.0f);    // Bottom Left Of The Quad (Bottom)
-  // glVertex3f( 02.0f,-02.0f,-02.0f);    // Bottom Right Of The Quad (Bottom)
-
-  // glColor3f(1.0f,0.0f,0.0f);    // Color Red
-  // glVertex3f( 02.0f, 02.0f, 02.0f);    // Top Right Of The Quad (Front)
-  // glVertex3f(-02.0f, 02.0f, 02.0f);    // Top Left Of The Quad (Front)
-  // glVertex3f(-02.0f,-02.0f, 02.0f);    // Bottom Left Of The Quad (Front)
-  // glVertex3f( 02.0f,-02.0f, 02.0f);    // Bottom Right Of The Quad (Front)
-
-  // glColor3f(1.0f,1.0f,0.0f);    // Color Yellow
-  // glVertex3f( 02.0f,-02.0f,-02.0f);    // Top Right Of The Quad (Back)
-  // glVertex3f(-02.0f,-02.0f,-02.0f);    // Top Left Of The Quad (Back)
-  // glVertex3f(-02.0f, 02.0f,-02.0f);    // Bottom Left Of The Quad (Back)
-  // glVertex3f( 02.0f, 02.0f,-02.0f);    // Bottom Right Of The Quad (Back)
-
-  // glColor3f(0.0f,0.0f,1.0f);    // Color Blue
-  // glVertex3f(-02.0f, 02.0f, 02.0f);    // Top Right Of The Quad (Left)
-  // glVertex3f(-02.0f, 02.0f,-02.0f);    // Top Left Of The Quad (Left)
-  // glVertex3f(-02.0f,-02.0f,-02.0f);    // Bottom Left Of The Quad (Left)
-  // glVertex3f(-02.0f,-02.0f, 02.0f);    // Bottom Right Of The Quad (Left)
-
-  // glColor3f(1.0f,0.0f,1.0f);    // Color Violet
-  // glVertex3f( 02.0f, 02.0f,-02.0f);    // Top Right Of The Quad (Right)
-  // glVertex3f( 02.0f, 02.0f, 02.0f);    // Top Left Of The Quad (Right)
-  // glVertex3f( 02.0f,-02.0f, 02.0f);    // Bottom Left Of The Quad (Right)
-  // glVertex3f( 02.0f,-02.0f,-02.0f);    // Bottom Right Of The Quad (Right)
-
-  // yRotated += 0.1;
-  // xRotated += 0.1;
-  // zRotated += 0.1;
-  // glEnd();
-
   vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
   vector <int> bRet(num_balls); // to store values returned by each thread
 
   for(int i = 0 ; i < num_balls; i ++){
-    bRet[i] = pthread_create(&balls[i], NULL, &controlBall, (void*)b[i]); // create a thread
+    bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
+    // controlBallWall checks for ball to wall collisions and updates the coordinates
 
     pthread_join(balls[i], NULL);
 
     drawBall(b[i]);
   }
+
+  // for(int i = 0 ; i < num_balls; i ++){
+  //   for (int j = i+1; j < num_balls; j++){
+  //     controlBallBall(balls[i], balls[j]);
+  //   }
+  // }
 
   glutSwapBuffers();
 }
