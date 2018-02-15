@@ -87,9 +87,9 @@ void initBalls(int n){
   for(int i = 0 ; i < n ; i++){
     b[i] = new ball(); // allocate memory to each ball
   }
-  // b[0] = new ball(0.5, 0, 0, 0.1, 0, 0);
+  // b[0] = new ball(1.0, 0, 0, 0.1, 0, 0);
   // b[1] = new ball(0.1, 0, 0, 0.0, 0, 0);
-  // b[2] = new ball(-0.5, 0, 0, 0.0, 0, 0);
+  // b[2] = new ball(-1.0, 0, 0, 0.0, 0, 0);
   // b[3] = new ball(0.9, 0, 0, 0.0, 0, 0);
 }
 
@@ -191,12 +191,153 @@ void controlBallBall(ball* b1, ball* b2){
   }
   return ;
 }
-
+float counter, p=0.0;
 void drawCube(){
 
   glClear(GL_COLOR_BUFFER_BIT); // clear the buffer
 
-  glMatrixMode(GL_MODELVIEW);
+  // glMatrixMode(GL_MODELVIEW);
+  // glLoadIdentity();
+  // glTranslatef(0.0,0.0,0.0);
+  // glBegin(GL_QUADS);
+ 
+  // glColor3f(0.0f,1.0f,0.0f);    // Color Blue
+  // glVertex3f(-02.0f, 02.0f, 0.0f);    
+  // glVertex3f(-05.0f, 02.0f, 0.0f);    
+  // glVertex3f(-05.0f,-02.0f, 0.0f);    
+  // glVertex3f(-02.0f,-02.0f, 0.0f); 
+
+  // glColor3f(0.0f,1.0f,0.0f);    // Color Blue
+  // glVertex3f( 02.0f, 02.0f, 0.0f);    
+  // glVertex3f( 05.0f, 02.0f, 0.0f);    
+  // glVertex3f( 05.0f,-02.0f, 0.0f);    
+  // glVertex3f( 02.0f,-02.0f, 0.0f); 
+
+  // glColor3f(1.0f,0.0f,0.0f);    // Color Blue
+  // glVertex3f(-02.0f, 00.0f, 0.0f);    
+  // glVertex3f( 02.0f, 00.0f, 0.0f);    
+  // glVertex3f(-02.0f,-10.0f, 0.0f);    
+  // glVertex3f( 02.0f,-10.0f, 0.0f); 
+
+  // glEnd();
+    glLoadIdentity();
+
+    
+
+    glTranslatef(counter+1.0,-0.7,0.0);
+    // glRotatef(5, 0, 1, 0);
+    glBegin(GL_QUADS);  
+
+    // if(counter < 0.9 && p == 0)
+    //  {
+    //      counter -= 0.01;
+    //      if(counter >= 0.8)
+    //      {
+    //         p=1;
+    //      }
+    //  }else
+    //    if(p == 1)
+    //    {
+    //       counter=counter+0.01;
+    //         if(counter<-0.8)
+    //         {
+    //           p=0;
+    //         }
+    //     }   
+
+        if(counter < 5.0 && p == 0)
+        {
+           counter+=0.01;
+           if(counter > 2.5)
+           {
+             p = 1;
+           } 
+        }else
+             if(p == 1)
+             {
+                counter-=0.01;
+                if(counter < -4.5)
+                {
+                  p = 0;
+                }
+             }
+
+    
+     glColor3f(1.0f,1.0f,0.0f);    
+    glVertex3f( 5.0f,-0.5f,-0.5f);  
+    glVertex3f(-5.0f,-0.5f,-0.5f);  
+    glVertex3f(-5.0f, 0.0f,-0.5f);    
+    glVertex3f( 5.0f, 0.0f,-0.5f);    
+    
+    
+    //  glColor3f(0.0f,1.0f,1.0f);    
+    // glVertex3f(-5.0f, 0.0f, 0.0f); 
+    // glVertex3f(-4.0f, 0.0f, 0.0f);    
+    // glVertex3f(-4.0f, 2.0f, 0.0f);    
+    // glVertex3f(-5.0f, 2.0f, 0.0f);  
+    
+
+    //  glColor3f(0.0f,1.0f,1.0f);    
+    // glVertex3f( 5.0f, 0.0f, 0.0f);   
+    // glVertex3f( 4.0f, 0.0f, 0.0f);   
+    // glVertex3f( 4.0f, 2.0f, 0.0f);   
+    // glVertex3f( 5.0f, 2.0f, 0.0f); 
+
+  glEnd();
+    
+
+  
+   glTranslatef(0.0,0.0,0.0);
+      
+   glBegin(GL_TRIANGLES);
+
+
+    glColor3f(1.0, 1.0, 0.0);
+    glVertex3f(-0.5, -0.5, 0.0);
+    glVertex3f(0.5, -0.5, 0.0);
+    glVertex3f(0.0, 0.5, 0.0);
+
+   glEnd();
+
+   glTranslatef(0.0,0.0,0.0);
+      
+   glBegin(GL_TRIANGLES);
+
+
+    glColor3f(1.0, 1.0, 0.0);
+    glVertex3f(1.0, -0.5, 0.0);
+    glVertex3f(2.0, -0.5, 0.0);
+    glVertex3f(1.5, 0.5, 0.0);
+
+   glEnd();
+
+
+   glTranslatef(0.0,0.0,0.0);
+      
+   glBegin(GL_TRIANGLES);
+
+
+    glColor3f(1.0, 1.0, 0.0);
+    glVertex3f(2.5, -0.5, 0.0);
+    glVertex3f(3.5, -0.5, 0.0);
+    glVertex3f(3.0, 0.5, 0.0);
+
+   glEnd();
+
+
+   glTranslatef(-2.0,0.0,0.0);           
+      
+   glBegin(GL_TRIANGLES);
+
+
+    glColor3f(1.0, 1.0, 0.0);
+    glVertex3f(-0.5, -0.5, 0.0);
+    glVertex3f(0.5, -0.5, 0.0);
+    glVertex3f(0.0, 0.5, 0.0);
+
+   glEnd();
+    
+   
 
   vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
@@ -224,6 +365,7 @@ void drawCube(){
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
   }
+
 
   glutSwapBuffers();
 }
