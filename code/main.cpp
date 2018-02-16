@@ -1,33 +1,43 @@
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "screen.h"
 
 void init(void){
-  glClearColor(0,0,0,0);
+  // initialize projection matrix
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  // initialize modelview matrix
+  glLoadIdentity();
+  // initialize clear color
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // R, G, B, Alpha
 }
 
 void reshape(int x, int y){
     if (y == 0 || x == 0) return;  // empty screen
- 
-    glMatrixMode(GL_PROJECTION); // set a projection matrix
 
-    glLoadIdentity();
-    
-    //Angle of view: 60 degrees
-    //Near clipping plane distance: 0.5
-    //Far clipping plane distance: 20.0
-<<<<<<< Updated upstream
-     
-    gluPerspective(60.0,(GLdouble)x/(GLdouble)y,0.1,1000.0);
-    glMatrixMode(GL_MODELVIEW); 
-=======
+    glMatrixMode(GL_PROJECTION);
 
-    gluPerspective(20.0,(GLdouble)x/(GLdouble)y,0.0,100.0);
-    glMatrixMode(GL_MODELVIEW);
->>>>>>> Stashed changes
-    glViewport(0,0,x,y);  //Use the whole window for rendering
+    // angle of view: 60 degrees
+    // near clipping plane distance: 0.0
+    // far clipping plane distance: 1000.0
+
+    gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
+
+    // glMatrixMode(GL_MODELVIEW);
+
+    glViewport(0, 0, x, y);  // use the whole window for rendering, 0, 0 specify the lower left side
 }
 
 int main(int argc, char** argv){
+
+  int n; // number of balls
+
+  cin >> n;
+
+  initBalls(n); // initialize the properties of all the balls
 
   glutInit(&argc, argv); // initialize glut
 
@@ -36,7 +46,8 @@ int main(int argc, char** argv){
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   glutInitWindowPosition(SCREEN_X,SCREEN_Y);
   glutCreateWindow("ScreenSaver Colliding Balls");
-  
+  // glutFullScreen(); // make the window full screen
+
   init(); // post window/context creation initialization
 
   glutDisplayFunc(drawCube); // set rendering function
@@ -46,8 +57,6 @@ int main(int argc, char** argv){
   glutIdleFunc(drawCube); // runs this function continuously
 
   glutMainLoop(); // start glut main loop
-  
+
   return 0;
 }
- 
-  
