@@ -57,7 +57,7 @@ void* controlBallWall(void* ballPtr){
   // get center of the ball
   vector <float> center = b->getCenter();
   // get velocities of the ball
-  vector <float> vel = b->getVel();
+  vector <float> vel = b->getVel(); 
   // get color values of the ball
   vector <float> color = b->getColor();
   // get radius of the ball
@@ -81,7 +81,21 @@ void* controlBallWall(void* ballPtr){
       center[i] -= vel[i];
       vel[i] = -1*vel[i];
     }
+  }
 
+  // for z-axis
+  if(center[2] > -2-rad){
+    center[2] = -2 - rad;
+  }
+  else if(center[2] < -12+rad){
+    center[2] = -12 + rad;
+  } 
+  if(center[2] + vel[2] <= -2-rad && center[2] + vel[2] >= -12+rad){
+    center[2] += vel[2];
+  }
+  else{
+    center[2] -= vel[2];
+    vel[2] = -1*vel[2];
   }
 
   // pthread_barrier_wait(&barrier);
@@ -132,42 +146,48 @@ void drawCube(){
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
-
+  
   glTranslatef(0.0, 0.0, -7.0);
 
   glBegin(GL_QUADS);
-
-  glColor3f(0.0f,1.0f,0.0f);    // Color Blue
+  
+ 
+  glColor3f(0.3f,0.4f,0.3f);   
   glVertex3f( 01.0f, 01.0f,-05.0f);    // Top Right Of The Quad (Top)
   glVertex3f(-01.0f, 01.0f,-05.0f);    // Top Left Of The Quad (Top)
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Bottom Left Of The Quad (Top)
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Bottom Right Of The Quad (Top)
-
-  glColor3f(1.0f,1.0f,0.0f);    // Color Orange
+  
+ 
+  glColor3f(0.1f,0.1f,0.8f);    
   glVertex3f( 01.0f,-01.0f, 05.0f);    // Top Right Of The Quad (Bottom)
   glVertex3f(-01.0f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
   glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
   glVertex3f( 01.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)
-
-  glColor3f(1.0f,0.0f,0.0f);    // Color Red
+  
+  
+  glColor3f(0.5f,0.5f,0.5f);    
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Front)
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Front)
   glVertex3f(-01.0f,-01.0f, 05.0f);    // Bottom Left Of The Quad (Front)
   glVertex3f( 01.0f,-01.0f, 05.0f);    // Bottom Right Of The Quad (Front)
 
-  glColor3f(1.0f,1.0f,0.0f);    // Color Yellow
+  
+  glColor3f(1.0f,0.2f,0.3f);    
   glVertex3f( 01.0f,-01.0f,-05.0f);    // Top Right Of The Quad (Back)
   glVertex3f(-01.0f,-01.0f,-05.0f);    // Top Left Of The Quad (Back)
   glVertex3f(-01.0f, 01.0f,-05.0f);    // Bottom Left Of The Quad (Back)
   glVertex3f( 01.0f, 01.0f,-05.0f);    // Bottom Right Of The Quad (Back)
 
-  glColor3f(0.0f,0.0f,1.0f);    // Color Blue
+  
+  glColor3f(0.0f,1.0f,0.0f);    
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Left)
   glVertex3f(-01.0f, 01.0f,-05.0f);    // Top Left Of The Quad (Left)
   glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Left)
   glVertex3f(-01.0f,-01.0f, 05.0f);    // Bottom Right Of The Quad (Left)
 
-  glColor3f(1.0f,0.0f,1.0f);    // Color Violet
+
+  glColor3f(0.7f,0.1f,0.3f);    
   glVertex3f( 01.0f, 01.0f,-05.0f);    // Top Right Of The Quad (Right)
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Right)
   glVertex3f( 01.0f,-01.0f, 05.0f);    // Bottom Left Of The Quad (Right)

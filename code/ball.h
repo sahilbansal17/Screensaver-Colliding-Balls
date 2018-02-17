@@ -30,7 +30,7 @@ public:
 		uniform_real_distribution<float> speed(0.0, 0.05); //uniform distribution
 		for (int i = 0 ; i < 2 ; i ++){
 			vel[i] = speed(gen);
-		}
+		} 
 
 		// vel[1] = 0 ; // for debugging
 		// center[1] = 0.5; // for debugging
@@ -42,7 +42,7 @@ public:
 		}
 
 		// radius
-		rad = 0.1;
+		rad = 0.2;
 
 		// to make sure that ball does not go beyond the boundaries initially (2d boundary)
 		for(int i = 0 ; i < 2 ; i++){
@@ -58,8 +58,15 @@ public:
 		uniform_real_distribution<float> centerZ(-10.0, 0.0);
 		center[2] = centerZ(gen);
 
-		uniform_real_distribution<float> speedZ(1.0, 2.0);
+		uniform_real_distribution<float> speedZ(0.0, 0.1);
 		vel[2] = speedZ(gen);
+	
+		if(center[2] > -2-rad){
+			center[2] = -2 - rad;
+		}
+		else if(center[2] < -12+rad){
+			center[2] = -12 + rad;
+		}		
 	}
 
 	ball(float x1, float y1, float z1, float vx, float vy, float vz){

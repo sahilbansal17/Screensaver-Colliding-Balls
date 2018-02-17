@@ -5,7 +5,7 @@
 #endif
 #include "screen.h"
 
-void init(void){
+void init(void){ 
   // initialize projection matrix
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -35,7 +35,7 @@ int main(int argc, char** argv){
 
   int n; // number of balls
 
-  cin >> n;
+  n = stoi(argv[1]);
 
   initBalls(n); // initialize the properties of all the balls
 
