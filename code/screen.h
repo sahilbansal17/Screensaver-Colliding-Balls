@@ -11,7 +11,7 @@
 
 ball **b; // double pointer to ball
 int num_balls; // number of balls
-pthread_barrier_t barrier; // create pthread barrier
+// pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
 void initBalls(int n){
@@ -84,7 +84,7 @@ void* controlBallWall(void* ballPtr){
 
   }
 
-  pthread_barrier_wait(&barrier);
+  // pthread_barrier_wait(&barrier);
 
   //update the center of the balls
   b->setCenter(center[0], center[1], center[2]);
@@ -153,7 +153,7 @@ void drawCube(){
     pthread_join(balls[i], NULL);
 
   }
-  pthread_barrier_destroy(&barrier);
+  // pthread_barrier_destroy(&barrier);
 
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
