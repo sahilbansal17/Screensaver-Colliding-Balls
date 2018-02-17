@@ -16,7 +16,7 @@ execute: $(MAIN)
 	./$(MAIN) $(num_thread)
 
 $(MAIN):
-	$(CXX) $(CFLAGS) -o $(MAIN) $(LFLAGS) $(CODEDIR)/main.cpp
+	$(CXX) $(CODEDIR)/main.cpp $(CFLAGS) -o $(MAIN) $(LFLAGS) 
 
 clean:
 	rm $(MAIN)
