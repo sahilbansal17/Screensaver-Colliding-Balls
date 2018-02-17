@@ -22,13 +22,13 @@ public:
 
 		// coordiantes for center
 		uniform_real_distribution<float> coordinates(-1.0, 1.0); //uniform distribution
-		for (int i = 0 ; i < 3 ; i ++){
+		for (int i = 0 ; i < 2 ; i ++){
 			center[i] = coordinates(gen);
 		}
 
 		// speed in each direction
 		uniform_real_distribution<float> speed(0.0, 0.05); //uniform distribution
-		for (int i = 0 ; i < 3 ; i ++){
+		for (int i = 0 ; i < 2 ; i ++){
 			vel[i] = speed(gen);
 		}
 
@@ -44,10 +44,6 @@ public:
 		// radius
 		rad = 0.1;
 
-		// working in 2d
-		center[2] = -25;
-		vel[2] = 0.0;
-
 		// to make sure that ball does not go beyond the boundaries initially (2d boundary)
 		for(int i = 0 ; i < 2 ; i++){
 			if(center[i] > 1-rad){
@@ -57,6 +53,13 @@ public:
 				center[i] = -1 + rad;
 			}
 		}
+
+		// making balls work in 3D
+		uniform_real_distribution<float> centerZ(-10.0, 0.0);
+		center[2] = centerZ(gen);
+
+		uniform_real_distribution<float> speedZ(1.0, 2.0);
+		vel[2] = speedZ(gen);
 	}
 
 	ball(float x1, float y1, float z1, float vx, float vy, float vz){

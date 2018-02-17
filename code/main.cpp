@@ -22,9 +22,9 @@ void reshape(int x, int y){
 
     // angle of view: 60 degrees
     // near clipping plane distance: 0.0
-    // far clipping plane distance: 1000.0
+    // far clipping plane distance: 100.0
 
-    gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
+    gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 10.0);
 
     // glMatrixMode(GL_MODELVIEW);
 

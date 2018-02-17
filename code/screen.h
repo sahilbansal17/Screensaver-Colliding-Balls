@@ -11,7 +11,7 @@
 
 ball **b; // double pointer to ball
 int num_balls; // number of balls
-pthread_barrier_t barrier; // create pthread barrier
+// pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
 void initBalls(int n){
@@ -84,7 +84,7 @@ void* controlBallWall(void* ballPtr){
 
   }
 
-  pthread_barrier_wait(&barrier);
+  // pthread_barrier_wait(&barrier);
 
   //update the center of the balls
   b->setCenter(center[0], center[1], center[2]);
@@ -133,43 +133,45 @@ void drawCube(){
 
   glLoadIdentity();
 
-  glTranslatef(0.0, 0.0, -6.0);
+  glTranslatef(0.0, 0.0, -7.0);
+
+  glBegin(GL_QUADS);
 
   glColor3f(0.0f,1.0f,0.0f);    // Color Blue
-  glVertex3f( 01.0f, 01.0f,-02.0f);    // Top Right Of The Quad (Top)
-  glVertex3f(-01.0f, 01.0f,-02.0f);    // Top Left Of The Quad (Top)
-  glVertex3f(-01.0f, 01.0f, 02.0f);    // Bottom Left Of The Quad (Top)
-  glVertex3f( 01.0f, 01.0f, 02.0f);    // Bottom Right Of The Quad (Top)
+  glVertex3f( 01.0f, 01.0f,-05.0f);    // Top Right Of The Quad (Top)
+  glVertex3f(-01.0f, 01.0f,-05.0f);    // Top Left Of The Quad (Top)
+  glVertex3f(-01.0f, 01.0f, 05.0f);    // Bottom Left Of The Quad (Top)
+  glVertex3f( 01.0f, 01.0f, 05.0f);    // Bottom Right Of The Quad (Top)
 
   glColor3f(1.0f,1.0f,0.0f);    // Color Orange
-  glVertex3f( 01.0f,-01.0f, 02.0f);    // Top Right Of The Quad (Bottom)
-  glVertex3f(-01.0f,-01.0f, 02.0f);    // Top Left Of The Quad (Bottom)
-  glVertex3f(-01.0f,-01.0f,-02.0f);    // Bottom Left Of The Quad (Bottom)
-  glVertex3f( 01.0f,-01.0f,-02.0f);    // Bottom Right Of The Quad (Bottom)
+  glVertex3f( 01.0f,-01.0f, 05.0f);    // Top Right Of The Quad (Bottom)
+  glVertex3f(-01.0f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
+  glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
+  glVertex3f( 01.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)
 
   glColor3f(1.0f,0.0f,0.0f);    // Color Red
-  glVertex3f( 01.0f, 01.0f, 02.0f);    // Top Right Of The Quad (Front)
-  glVertex3f(-01.0f, 01.0f, 02.0f);    // Top Left Of The Quad (Front)
-  glVertex3f(-01.0f,-01.0f, 02.0f);    // Bottom Left Of The Quad (Front)
-  glVertex3f( 01.0f,-01.0f, 02.0f);    // Bottom Right Of The Quad (Front)
+  glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Front)
+  glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Front)
+  glVertex3f(-01.0f,-01.0f, 05.0f);    // Bottom Left Of The Quad (Front)
+  glVertex3f( 01.0f,-01.0f, 05.0f);    // Bottom Right Of The Quad (Front)
 
   glColor3f(1.0f,1.0f,0.0f);    // Color Yellow
-  glVertex3f( 01.0f,-01.0f,-02.0f);    // Top Right Of The Quad (Back)
-  glVertex3f(-01.0f,-01.0f,-02.0f);    // Top Left Of The Quad (Back)
-  glVertex3f(-01.0f, 01.0f,-02.0f);    // Bottom Left Of The Quad (Back)
-  glVertex3f( 01.0f, 01.0f,-02.0f);    // Bottom Right Of The Quad (Back)
+  glVertex3f( 01.0f,-01.0f,-05.0f);    // Top Right Of The Quad (Back)
+  glVertex3f(-01.0f,-01.0f,-05.0f);    // Top Left Of The Quad (Back)
+  glVertex3f(-01.0f, 01.0f,-05.0f);    // Bottom Left Of The Quad (Back)
+  glVertex3f( 01.0f, 01.0f,-05.0f);    // Bottom Right Of The Quad (Back)
 
   glColor3f(0.0f,0.0f,1.0f);    // Color Blue
-  glVertex3f(-01.0f, 01.0f, 02.0f);    // Top Right Of The Quad (Left)
-  glVertex3f(-01.0f, 01.0f,-02.0f);    // Top Left Of The Quad (Left)
-  glVertex3f(-01.0f,-01.0f,-02.0f);    // Bottom Left Of The Quad (Left)
-  glVertex3f(-01.0f,-01.0f, 02.0f);    // Bottom Right Of The Quad (Left)
+  glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Left)
+  glVertex3f(-01.0f, 01.0f,-05.0f);    // Top Left Of The Quad (Left)
+  glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Left)
+  glVertex3f(-01.0f,-01.0f, 05.0f);    // Bottom Right Of The Quad (Left)
 
   glColor3f(1.0f,0.0f,1.0f);    // Color Violet
-  glVertex3f( 01.0f, 01.0f,-02.0f);    // Top Right Of The Quad (Right)
-  glVertex3f( 01.0f, 01.0f, 02.0f);    // Top Left Of The Quad (Right)
-  glVertex3f( 01.0f,-01.0f, 02.0f);    // Bottom Left Of The Quad (Right)
-  glVertex3f( 01.0f,-01.0f,-02.0f);    // Bottom Right Of The Quad (Right)
+  glVertex3f( 01.0f, 01.0f,-05.0f);    // Top Right Of The Quad (Right)
+  glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Right)
+  glVertex3f( 01.0f,-01.0f, 05.0f);    // Bottom Left Of The Quad (Right)
+  glVertex3f( 01.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Right)
 
   glEnd();
 
@@ -194,7 +196,7 @@ void drawCube(){
     pthread_join(balls[i], NULL);
 
   }
-  pthread_barrier_destroy(&barrier);
+  // pthread_barrier_destroy(&barrier);
 
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
