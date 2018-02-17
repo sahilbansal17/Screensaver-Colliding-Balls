@@ -33,7 +33,7 @@ int main(int argc, char** argv){
 
   int n; // number of balls
 
-  cin >> n;
+  n = stoi(argv[1]); // take argument from a.out
 
   initBalls(n); // initialize the properties of all the balls
 
