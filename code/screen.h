@@ -157,7 +157,7 @@ void controlBallTerrain(ball *b, Triangle *t){
       float speed = mag(vel);
 
       // check whether in the range of the line segment
-      float projOnLine = dotProd(diff(p1, center), line);
+      float projOnLine = dotProd(diff(p2, center), line);
       if(projOnLine >= 0){
 
         float init_speed = mag(vel);
@@ -193,8 +193,8 @@ void controlBallTerrain(ball *b, Triangle *t){
     if(abs(dist_check) <= rad){
       float speed = mag(vel);
 
-      float projOnLine = dotProd(diff(p1, center), line);
-      cout << projOnLine << " ";
+      float projOnLine = dotProd(diff(p2, center), line);
+
       if(projOnLine < 0){
         return;
       }
