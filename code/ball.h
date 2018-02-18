@@ -57,6 +57,7 @@ public:
 				center[i] = -1 + rad;
 			}
 		}
+
 	}
 
 	ball(float x1, float y1, float z1, float vx, float vy, float vz){
