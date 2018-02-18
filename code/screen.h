@@ -42,12 +42,14 @@ void drawBall(ball *b){
 
   glLoadIdentity();
   glTranslatef(center[0], center[1], center[2]);
+  
 
   glBegin(GL_POLYGON);
   glColor3f(color[0], color[1], color[2]); // give color to the sphere
   glutSolidSphere(rad, 50, 50);
   glEnd();
 }
+
 
 // function to control ball coordinates
 void* controlBallWall(void* ballPtr){
@@ -140,11 +142,11 @@ void controlBallBall(ball* b1, ball* b2){
 }
 
 void drawCube(){
+  
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the buffer
 
-  glClear(GL_COLOR_BUFFER_BIT); // clear the buffer
-
-  glMatrixMode(GL_MODELVIEW);
-
+  // glMatrixMode(GL_MODELVIEW);
+  
   glLoadIdentity();
   
   glTranslatef(0.0, 0.0, -7.0);
@@ -221,6 +223,6 @@ void drawCube(){
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
   }
-
+  
   glutSwapBuffers();
 }
