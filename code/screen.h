@@ -10,7 +10,10 @@
 // GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
 ball **b; // double pointer to ball
+Triangle **t;
+
 int num_balls; // number of balls
+int num_tri = 1; // number of triangles
 // pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
@@ -24,6 +27,13 @@ void initBalls(int n){
   // b[1] = new ball(0.1, 0, 0, 0.0, 0, 0);
   // b[2] = new ball(-0.5, 0, 0, 0.0, 0, 0);
   // b[3] = new ball(0.9, 0, 0, 0.0, 0, 0);
+}
+
+void initTriangles(){
+  t = new Triangle*[num_tri];
+  // terrain objects
+  t[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
+  // t[1] = new Triangle(0.0, -0.5, 0.5, 0.0, 1.0, -0.5);
 }
 
 // temporary function to debug threads
@@ -125,7 +135,7 @@ void controlBallBall(ball* b1, ball* b2){
   return ;
 }
 
-void controlBallTerrain(ball *b){
+void controlBallTerrain(ball *b, Triangle *t){
     // assuming one terrain object
 
     vector <float> center = b->getCenter();
@@ -133,71 +143,50 @@ void controlBallTerrain(ball *b){
     float rad = b->getRadius();
     // check whether distance from center of ball is less than or equal to terrain line
 
-    // find normal vector to the line
     vector <float> p1(3), p2(3);
-    p1[0] = -0.5; p1[1] = -0.5;
-    p2[0] = -1.0; p2[1] = -1.0;
-    p1[2] = 0.0; p2[2] = 0.0;
+    p1 = t->getPt1(); // 1st point
+    p2 = t->getPt2(); // 2nd point
+    vector <float> line = t->getLL(); // /type line
 
-    vector <float> line = diff(p1, p2);
-    vector <float> norm = RnormalToLine(line);
+    // find normal vector to the line
+    vector <float> norm = RnormalToLine(line); // has \type normal
     float norm_mag = mag(norm);
     float dist_check = dotProd(diff(center, p1), norm)/norm_mag;
-
-    // approach 3 - region of collision is fixed
-    // cout << check << "\n";
 
     if(abs(dist_check) <= rad){
       float speed = mag(vel);
 
       // check whether in the range of the line segment
       float projOnLine = dotProd(diff(p1, center), line);
-      if(projOnLine < 0){
+      if(projOnLine >= 0){
+
+        float init_speed = mag(vel);
+
+        // find the velocity vector along the normal
+        vector <float> v_n = mulConst(norm, dotProd(vel, norm)/norm_mag);
+
+        // final velocity is simply velocity - 2*v_n
+        vector <float> f_v = add(vel, mulConst(v_n, -2.0));
+
+        // to maintain same speed of the ball (lost due to less precision of float)
+        float final_speed = mag(f_v);
+        f_v = mulConst(f_v, init_speed/final_speed);
+
+        // change the velocity
+        b->setVel(f_v[0], f_v[1], f_v[2]);
+
+        // set the center so that ball do not stick to triangle
+        vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), 0.001+rad-dist_check));
+        b->setCenter(c_new[0], c_new[1], c_new[2]);
         return;
       }
-
-      float init_speed = mag(vel);
-      // cout << init_speed << " ";
-
-      // 1st approach - more tedious
-      // float cos_angle = dotProd(vel, norm)/(speed*mag(norm));
-      // cout << cos_angle << " ";
-      // float sin_angle = sqrt(1 - pow(cos_angle, 2));
-      // now the new velocity is simply rotating the initial vector by 180 - 2*angle
-
-      // changing the approach
-      // find the velocity vector along the normal
-      vector <float> v_n = mulConst(norm, dotProd(vel, norm)/norm_mag);
-
-      // final velocity is simply velocity - 2*v_n
-      vector <float> f_v = add(vel, mulConst(v_n, -2.0));
-
-      // to maintain same speed of the ball (lost due to less precision of float)
-      float final_speed = mag(f_v);
-      f_v = mulConst(f_v, init_speed/final_speed);
-
-      // final_speed = mag(f_v);
-      // cout << final_speed << "\n";
-
-      // cout << f_v[0] << " " << f_v[1] << " " << f_v[2] << "\n";
-      // b->setVel(0, 0, 0);
-
-      // change the velocity
-      b->setVel(f_v[0], f_v[1], f_v[2]);
-
-      // set the center so that ball do not stick to triangle
-      vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), 0.001+rad-dist_check));
-      b->setCenter(c_new[0], c_new[1], c_new[2]);
-      return;
     }
 
     // checking with the second side of the triangle
-    p1[0] = -0.5; p1[1] = -0.5;
-    p2[0] = 0.0; p2[1] = -1.0;
-    p1[2] = 0.0; p2[2] = 0.0;
+    p1 = t->getPt3(); // take the right point as p1
 
-    line = diff(p1, p2);
-    norm = LnormalToLine(line);
+    line = t->getLR();
+    norm = LnormalToLine(line); // left normal
     norm_mag = mag(norm);
     dist_check = dotProd(diff(center, p1), norm)/norm_mag;
 
@@ -205,6 +194,7 @@ void controlBallTerrain(ball *b){
       float speed = mag(vel);
 
       float projOnLine = dotProd(diff(p1, center), line);
+      cout << projOnLine << " ";
       if(projOnLine < 0){
         return;
       }
@@ -225,13 +215,34 @@ void controlBallTerrain(ball *b){
     }
 }
 
+void drawTriangle(Triangle *t){
+
+
+  glBegin(GL_TRIANGLES);
+
+  glColor3f(0.1f, 1.0f, 0.1f);
+  vector <float> pt1(3), pt2(3), pt3(3);
+  pt1 = t->getPt1();
+  pt2 = t->getPt2();
+  pt3 = t->getPt3();
+  glVertex3f(pt1[0], pt1[1], 0.0);
+  glVertex3f(pt2[0], pt2[1], 0.0);
+  glVertex3f(pt3[0], pt3[1], 0.0);
+
+  glEnd();
+}
+
 void drawCube(){
 
   glClear(GL_COLOR_BUFFER_BIT); // clear the buffer
 
   glLoadIdentity();
 
-  drawTerrain();
+  // drawTerrain();
+
+  for(int i = 0 ; i < 1 ; i ++){
+    drawTriangle(t[i]);
+  }
 
   vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
@@ -250,7 +261,7 @@ void drawCube(){
   // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
 
   for(int i = 0 ; i < num_balls ; i ++){
-    controlBallTerrain(b[i]);
+    controlBallTerrain(b[i], t[0]);
   }
 
   for(int i = 0 ; i < num_balls ; i ++){

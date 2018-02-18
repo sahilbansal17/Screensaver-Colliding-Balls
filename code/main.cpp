@@ -36,7 +36,7 @@ int main(int argc, char** argv){
   n = stoi(argv[1]); // take argument from a.out
 
   initBalls(n); // initialize the properties of all the balls
-
+  initTriangles(); // initialize the terrian objects
   glutInit(&argc, argv); // initialize glut
 
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); // create double buffer window
