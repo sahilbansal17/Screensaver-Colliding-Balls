@@ -60,7 +60,7 @@ public:
 			}
 		}
 
-		orgColor = color; // to make it back to orig color 
+		orgColor = color; // to make it back to orig color
 		isWhite = 0; // originally not white
 	}
 
@@ -123,7 +123,7 @@ public:
 	}
 	void increaseRad(){
 		rad += 0.005;
-		cout << "New radius " << rad << "\n"; 
+		// cout << "New radius " << rad << "\n"; 
 	}
 	void decreaseRad(){
 		rad -= 0.005;

@@ -40,27 +40,40 @@ public:
   vector <float> getLR(){
     return lineR;
   }
+
+  // setter
+  float translatePts(float x){
+    pt1[0] += x;
+    pt2[0] += x;
+    pt3[0] += x;
+  }
 };
 
 
-float translateNegX = 4.0;
+float translateNegX = 1.0;
 bool movRight = 1;
-void drawTerrain(){
+void drawTerrain(Triangle** t, int n){
 
   // assume fixed along x-axis to analyze initially
-  // glTranslatef(0, -0.5, 0.0);
+  glTranslatef(translateNegX, 0.0, 0.0);
 
   if(movRight == 1){
     translateNegX -= 0.01;
-    if(translateNegX <= -4){
+    t[0]->translatePts(-0.01);
+    if(translateNegX <= -1){
       movRight = 0;
     }
   }
   else{
       translateNegX += 0.01;
-      if(translateNegX >= 4){
+      t[0]->translatePts(0.01);
+      if(translateNegX >= 1){
         movRight = 1;
       }
+  }
+
+  for(int i = 0 ; i < n ; i ++){
+
   }
   // glBegin(GL_QUADS);
   //

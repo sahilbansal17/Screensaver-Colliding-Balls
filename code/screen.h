@@ -12,6 +12,7 @@ void keyboard(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 ball **b; // double pointer to ball
 Triangle **t;
+Triangle **t_copy;
 
 int num_balls; // number of balls
 int num_tri = 1; // number of triangles
@@ -32,9 +33,12 @@ void initBalls(int n){
 
 void initTriangles(){
   t = new Triangle*[num_tri];
+  t_copy = new Triangle*[num_tri];
   // terrain objects
   t[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
+  t_copy[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
   // t[1] = new Triangle(0.0, -0.5, 0.5, 0.0, 1.0, -0.5);
+  t_copy[0]->translatePts(1);
 }
 
 // temporary function to debug threads
@@ -239,7 +243,7 @@ void drawCube(){
 
   glLoadIdentity();
 
-  // drawTerrain();
+  drawTerrain(t_copy, num_tri);
 
   for(int i = 0 ; i < 1 ; i ++){
     drawTriangle(t[i]);
@@ -262,7 +266,7 @@ void drawCube(){
   // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
 
   for(int i = 0 ; i < num_balls ; i ++){
-    controlBallTerrain(b[i], t[0]);
+    controlBallTerrain(b[i], t_copy[0]);
   }
 
   for(int i = 0 ; i < num_balls ; i ++){
@@ -283,9 +287,9 @@ void drawCube(){
   glutSpecialFunc(specialKey);
 }
 
-int ballSelected = -1; 
-void keyboard(unsigned char key, int x, int y){  
-  if(key == 27){ // escape key 
+int ballSelected = -1;
+void keyboard(unsigned char key, int x, int y){
+  if(key == 27){ // escape key
     exit(0);
   }
   else if(key == 'f'){
@@ -297,7 +301,7 @@ void keyboard(unsigned char key, int x, int y){
     b[ball_id]->changeColor();
     if(ballSelected = -1){
       ballSelected = ball_id;
-    } 
+    }
     else{
       ballSelected = -1;
     }
