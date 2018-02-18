@@ -7,8 +7,9 @@
 #define SCREEN_X 500
 #define SCREEN_Y 100
 #define eps 10e-3
-// GLfloat xRotated = 0.0, yRotated = 0.0, zRotated = 0.0;
 
+void keyboard(unsigned char key, int x, int y);
+void specialKey(int key, int x, int y);
 ball **b; // double pointer to ball
 Triangle **t;
 
@@ -278,4 +279,42 @@ void drawCube(){
   }
 
   glutSwapBuffers();
+  glutKeyboardFunc(keyboard);
+  glutSpecialFunc(specialKey);
+}
+
+int ballSelected = -1; 
+void keyboard(unsigned char key, int x, int y){  
+  if(key == 27){ // escape key 
+    exit(0);
+  }
+  else if(key == 'f'){
+    glutFullScreen();
+  }
+  // for keys 0 to 9 give the option of selecting the ball
+  int ball_id = key - 48;
+  if(key >= '0' && key <= '9' && ball_id < num_balls){
+    b[ball_id]->changeColor();
+    if(ballSelected = -1){
+      ballSelected = ball_id;
+    } 
+    else{
+      ballSelected = -1;
+    }
+  }
+  if(key == '=' && ballSelected >= 0){
+    b[ballSelected]->increaseVal();
+  }
+  if(key == '-' && ballSelected >= 0){
+    b[ballSelected]->decreaseVal();
+  }
+}
+
+void specialKey(int key, int x, int y){
+  if(key == GLUT_KEY_DOWN && ballSelected >= 0){
+    b[ballSelected]->decreaseRad();
+  }
+  if(key == GLUT_KEY_UP && ballSelected >= 0){
+    b[ballSelected]->increaseRad();
+  }
 }
