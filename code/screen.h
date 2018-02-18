@@ -15,7 +15,7 @@ Triangle **t;
 Triangle **t_copy;
 
 int num_balls; // number of balls
-int num_tri = 1; // number of triangles
+int num_tri = 6; // number of triangles
 // pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
@@ -36,9 +36,23 @@ void initTriangles(){
   t_copy = new Triangle*[num_tri];
   // terrain objects
   t[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
+  t[1] = new Triangle(-4.0, -1, -3.75, -0.25, -3.5, -1);
+  t[2] = new Triangle(-2.5, -1, -2.25, 0.0, -2.0, -1);
+  t[3] = new Triangle(4.0, -1, 3.75, -0.25, 3.5, -1);
+  t[4] = new Triangle(2.5, -1, 2.25, 0.0, 2.0, -1);
+  t[5] = new Triangle(0.0, -1.0, 0.5, 0.0, 1.0, -1.0);
   t_copy[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
-  // t[1] = new Triangle(0.0, -0.5, 0.5, 0.0, 1.0, -0.5);
-  t_copy[0]->translatePts(1);
+  t_copy[1] = new Triangle(-4.0, -1, -3.75, -0.25, -3.5, -1);
+  t_copy[2] = new Triangle(-2.5, -1, -2.25, 0.0, -2.0, -1);
+  t_copy[3] = new Triangle(4.0, -1, 3.75, -0.25, 3.5, -1);
+  t_copy[4] = new Triangle(2.5, -1, 2.25, 0.0, 2.0, -1);
+  t_copy[5] = new Triangle(0.0, -1.0, 0.5, 0.0, 1.0, -1.0);
+  t_copy[0]->translatePts(4);
+  t_copy[1]->translatePts(4);
+  t_copy[2]->translatePts(4);
+  t_copy[3]->translatePts(4);
+  t_copy[4]->translatePts(4);
+  t_copy[5]->translatePts(4);
 }
 
 // temporary function to debug threads
@@ -215,7 +229,7 @@ void controlBallTerrain(ball *b, Triangle *t){
 
       b->setVel(f_v[0], f_v[1], f_v[2]);
 
-      vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), rad-dist_check));
+      vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), 0.001+rad-dist_check));
       b->setCenter(c_new[0], c_new[1], c_new[2]);
     }
 }
@@ -245,7 +259,7 @@ void drawCube(){
 
   drawTerrain(t_copy, num_tri);
 
-  for(int i = 0 ; i < 1 ; i ++){
+  for(int i = 0 ; i < num_tri ; i ++){
     drawTriangle(t[i]);
   }
 
@@ -266,7 +280,9 @@ void drawCube(){
   // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
 
   for(int i = 0 ; i < num_balls ; i ++){
-    controlBallTerrain(b[i], t_copy[0]);
+    for(int j = 0 ; j < num_tri; j ++){
+      controlBallTerrain(b[i], t_copy[j]);
+    }
   }
 
   for(int i = 0 ; i < num_balls ; i ++){

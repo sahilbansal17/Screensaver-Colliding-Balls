@@ -50,7 +50,7 @@ public:
 };
 
 
-float translateNegX = 1.0;
+float translateNegX = 4.0;
 bool movRight = 1;
 void drawTerrain(Triangle** t, int n){
 
@@ -59,15 +59,19 @@ void drawTerrain(Triangle** t, int n){
 
   if(movRight == 1){
     translateNegX -= 0.01;
-    t[0]->translatePts(-0.01);
-    if(translateNegX <= -1){
+    for(int i = 0 ; i < n ; i ++){
+        t[i]->translatePts(-0.01);
+    }
+    if(translateNegX <= -4){
       movRight = 0;
     }
   }
   else{
       translateNegX += 0.01;
-      t[0]->translatePts(0.01);
-      if(translateNegX >= 1){
+      for(int i = 0 ; i < n ; i ++){
+          t[i]->translatePts(0.01);
+      }
+      if(translateNegX >= 4){
         movRight = 1;
       }
   }
