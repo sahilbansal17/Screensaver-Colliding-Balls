@@ -58,18 +58,18 @@ void drawTerrain(Triangle** t, int n){
   glTranslatef(translateNegX, 0.0, 0.0);
 
   if(movRight == 1){
-    translateNegX -= 0.01;
+    translateNegX -= 0.005;
     for(int i = 0 ; i < n ; i ++){
-        t[i]->translatePts(-0.01);
+        t[i]->translatePts(-0.005);
     }
-    if(translateNegX <= -4){
+    if(translateNegX <= -1){
       movRight = 0;
     }
   }
   else{
-      translateNegX += 0.01;
+      translateNegX += 0.005;
       for(int i = 0 ; i < n ; i ++){
-          t[i]->translatePts(0.01);
+          t[i]->translatePts(0.005);
       }
       if(translateNegX >= 4){
         movRight = 1;
@@ -79,43 +79,14 @@ void drawTerrain(Triangle** t, int n){
   for(int i = 0 ; i < n ; i ++){
 
   }
-  // glBegin(GL_QUADS);
-  //
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f( 5.0f, -0.5f, 0.0f);
-  // glVertex3f(-5.0f, -0.5f, 0.0f);
-  // glVertex3f(-5.0f, -0.2f, 0.0f);
-  // glVertex3f( 5.0f, -0.2f, 0.0f);
-  //
-  // glEnd();
+  glBegin(GL_QUADS);
 
+  glColor3f(0.1f, 1.0f, 0.1f);
+  glVertex3f( 5.0f, -1.0f, 0.0f);
+  glVertex3f(-5.0f, -1.0f, 0.0f);
+  glVertex3f(-5.0f, -0.7f, 0.0f);
+  glVertex3f( 5.0f, -0.7f, 0.0f);
 
-  // glBegin(GL_TRIANGLES);
+  glEnd();
 
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f(-4.0, -0.5, 0.0);
-  // glVertex3f(-3.75, 0.25, 0.0);
-  // glVertex3f(-3.5, -0.5, 0.0);
-  //
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f(-2.5, -0.5, 0.0);
-  // glVertex3f(-2.25, 0.5, 0.0);
-  // glVertex3f(-2.0, -0.5, 0.0);
-
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f(4.0, -0.5, 0.0);
-  // glVertex3f(3.75, 0.25, 0.0);
-  // glVertex3f(3.5, -0.5, 0.0);
-  //
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f(2.5, -0.5, 0.0);
-  // glVertex3f(2.25, 0.5, 0.0);
-  // glVertex3f(2.0, -0.5, 0.0);
-  //
-  // glColor3f(0.1f, 1.0f, 0.1f);
-  // glVertex3f(1.0, -0.5, 0.0);
-  // glVertex3f(0.5, 0.5, 0.0);
-  // glVertex3f( 0.0, -0.5, 0.0);
-
-  // glEnd();
 }

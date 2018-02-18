@@ -11,11 +11,11 @@
 void keyboard(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 ball **b; // double pointer to ball
-Triangle **t;
-Triangle **t_copy;
+Triangle **t; // to draw triangles
+Triangle **t_copy; // to check collisions and keep updating with translating screen
 
 int num_balls; // number of balls
-int num_tri = 6; // number of triangles
+int num_tri = 4; // number of triangles
 // pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
@@ -34,25 +34,22 @@ void initBalls(int n){
 void initTriangles(){
   t = new Triangle*[num_tri];
   t_copy = new Triangle*[num_tri];
+
   // terrain objects
-  t[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
-  t[1] = new Triangle(-4.0, -1, -3.75, -0.25, -3.5, -1);
-  t[2] = new Triangle(-2.5, -1, -2.25, 0.0, -2.0, -1);
-  t[3] = new Triangle(4.0, -1, 3.75, -0.25, 3.5, -1);
-  t[4] = new Triangle(2.5, -1, 2.25, 0.0, 2.0, -1);
-  t[5] = new Triangle(0.0, -1.0, 0.5, 0.0, 1.0, -1.0);
-  t_copy[0] = new Triangle(-1.0, -1, -0.5, -0.5, 0.0, -1);
-  t_copy[1] = new Triangle(-4.0, -1, -3.75, -0.25, -3.5, -1);
-  t_copy[2] = new Triangle(-2.5, -1, -2.25, 0.0, -2.0, -1);
-  t_copy[3] = new Triangle(4.0, -1, 3.75, -0.25, 3.5, -1);
-  t_copy[4] = new Triangle(2.5, -1, 2.25, 0.0, 2.0, -1);
-  t_copy[5] = new Triangle(0.0, -1.0, 0.5, 0.0, 1.0, -1.0);
+  t[0] = new Triangle(-1.0, -1.0, -0.5 , -0.5 ,  0.0, -1.0);
+  t[1] = new Triangle(-4.0, -1.0, -4.0 , -0.35, -3.5, -1.0);
+  t[2] = new Triangle(-2.5, -1.0, -2.25,  0.0 , -2.0, -1.0);
+  t[3] = new Triangle( 0.0, -1.0,  0.5 ,  0.0 ,  1.0, -1.0);
+  t_copy[0] = new Triangle(-1.0, -1.0, -0.5 , -0.5 ,  0.0, -1.0);
+  t_copy[1] = new Triangle(-4.0, -1.0, -4.0 , -0.35, -3.5, -1.0);
+  t_copy[2] = new Triangle(-2.5, -1.0, -2.25,  0.0 , -2.0, -1.0);
+  t_copy[3] = new Triangle( 0.0, -1.0,  0.5 ,  0.0 ,  1.0, -1.0);
+
+
   t_copy[0]->translatePts(4);
   t_copy[1]->translatePts(4);
   t_copy[2]->translatePts(4);
   t_copy[3]->translatePts(4);
-  t_copy[4]->translatePts(4);
-  t_copy[5]->translatePts(4);
 }
 
 // temporary function to debug threads
@@ -92,25 +89,34 @@ void* controlBallWall(void* ballPtr){
   // get radius of the ball
   float rad = b->getRadius();
 
-  // to make sure that ball does not go beyond the boundaries initially (2d boundary)
-  for(int i = 0 ; i < 2 ; i++){
-    if(center[i] > 1-rad){
-      center[i] = 1 - rad;
-    }
-    else if(center[i] < -1+rad){
-      center[i] = -1 + rad;
-    }
+  // to make sure that ball does not go beyond the boundaries initially - x direction
+  if(center[0] > 1-rad){
+    center[0] = 1 - rad;
   }
-  // update the center of the ball using velocities, detecting collision with the walls
-  for(int i = 0 ; i < 2 ; i++){
-    if(center[i] + vel[i] <= 1-rad && center[i] + vel[i] >= -1+rad){
-        center[i] += vel[i];
-    }
-    else{
-      center[i] -= vel[i];
-      vel[i] = -1*vel[i];
-    }
-
+  else if(center[0] < -1+rad){
+    center[0] = -1 + rad;
+  }
+  // y - direction, there is a rectangular region below now of ht 0.3
+  if(center[1] > 1-rad){
+    center[1] = 1 - rad;
+  }
+  else if(center[1] < -0.7+rad){
+    center[1] = -0.7 + rad;
+  }
+  // update the center of the ball using velocities, detecting collision with the wall
+  if(center[0] + vel[0] <= 1-rad && center[0] + vel[0] >= -1+rad){
+      center[0] += vel[0];
+  }
+  else{
+    center[0] -= vel[0];
+    vel[0] = -1*vel[0];
+  }
+  if(center[1] + vel[1] <= 1-rad && center[1] + vel[1] >= -0.7+rad){
+      center[1] += vel[1];
+  }
+  else{
+    center[1] -= vel[1];
+    vel[1] = -1*vel[1];
   }
 
   // pthread_barrier_wait(&barrier);
@@ -304,12 +310,21 @@ void drawCube(){
 }
 
 int ballSelected = -1;
+bool full = 0;
 void keyboard(unsigned char key, int x, int y){
   if(key == 27){ // escape key
     exit(0);
   }
   else if(key == 'f'){
-    glutFullScreen();
+    if(!full){
+      full = 1;
+      glutFullScreen();
+    }
+    else{
+      full = 0;
+      glutPositionWindow(SCREEN_X, SCREEN_Y);
+      glutReshapeWindow(SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
   }
   // for keys 0 to 9 give the option of selecting the ball
   int ball_id = key - 48;

@@ -29,7 +29,7 @@ public:
 		}
 
 		// speed in each direction
-		uniform_real_distribution<float> speed(0.0, 0.05); //uniform distribution
+		uniform_real_distribution<float> speed(0.0, 0.02); //uniform distribution
 		for (int i = 0 ; i < 3 ; i ++){
 			vel[i] = speed(gen);
 		}
@@ -44,21 +44,26 @@ public:
 		}
 
 		// radius
-		rad = 0.1;
+		rad = 0.08;
 
 		// working in 2d
 		center[2] = 0.0;
 		vel[2] = 0.0;
 
-		// to make sure that ball does not go beyond the boundaries initially (2d boundary)
-		for(int i = 0 ; i < 2 ; i++){
-			if(center[i] > 1-rad){
-				center[i] = 1 - rad;
-			}
-			else if(center[i] < -1+rad){
-				center[i] = -1 + rad;
-			}
-		}
+		// to make sure that ball does not go beyond the boundaries initially - x direction
+	  if(center[0] > 1-rad){
+	    center[0] = 1 - rad;
+	  }
+	  else if(center[0] < -1+rad){
+	    center[0] = -1 + rad;
+	  }
+	  // y - direction, there is a rectangular region below now of ht 0.3
+	  if(center[1] > 1-rad){
+	    center[1] = 1 - rad;
+	  }
+	  else if(center[1] < -0.7+rad){
+	    center[1] = -0.7 + rad;
+	  }
 
 		orgColor = color; // to make it back to orig color
 		isWhite = 0; // originally not white
@@ -112,21 +117,29 @@ public:
 
 	void increaseVal(){
 		float init_speed = mag(vel);
-		vel = mulConst(vel, (init_speed+0.0005)/(init_speed));
+		if(init_speed < 0.1){
+			vel = mulConst(vel, (init_speed+0.0005)/(init_speed));
+		}
 		// cout << "New Velocity" << mag(vel) << "\n";
 	}
 
 	void decreaseVal(){
 		float init_speed = mag(vel);
-		vel = mulConst(vel, (init_speed-0.0005)/(init_speed));
+		if(init_speed > 0.001){
+			vel = mulConst(vel, (init_speed-0.0005)/(init_speed));
+		}
 		// cout << "New Velocity" << mag(vel) << "\n";
 	}
 	void increaseRad(){
-		rad += 0.005;
-		// cout << "New radius " << rad << "\n"; 
+		if(rad < 0.15){
+			rad += 0.005;
+		}
+		// cout << "New radius " << rad << "\n";
 	}
 	void decreaseRad(){
-		rad -= 0.005;
+		if(rad > 0.05){
+			rad -= 0.005;
+		}
 	}
 	void setCenter(float x_, float y_, float z_){
 		center[0] = x_;

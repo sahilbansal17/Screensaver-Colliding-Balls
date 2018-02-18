@@ -18,14 +18,6 @@ void init(void){
 void reshape(int x, int y){
     if (y == 0 || x == 0) return;  // empty screen
 
-    // glMatrixMode(GL_PROJECTION);
-    // angle of view: 45 degrees
-    // near clipping plane distance: 0.0
-    // far clipping plane distance: 1000.0
-    // gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 1000.0);
-
-    // glMatrixMode(GL_MODELVIEW);
-
     glViewport(0, 0, x, y);  // use the whole window for rendering, 0, 0 specify the lower left side
 }
 
@@ -55,6 +47,6 @@ int main(int argc, char** argv){
   glutIdleFunc(drawCube); // runs this function continuously
 
   glutMainLoop(); // start glut main loop
-
+  
   return 0;
 }
