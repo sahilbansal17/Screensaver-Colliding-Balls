@@ -8,29 +8,31 @@ class ball{
 private:
 	vector <float> center; // coordinates for the center
 	vector <float> color; // color values
+	vector <float> orgColor; // color values in previous state
 	vector <float> vel; // velocities in each direction
 	float rad; // radius of the ball
+	bool isWhite;
 public:
 	// constructor
 	ball(){
 		center = vector <float> (3);
 		color = vector <float> (3);
 		vel = vector <float> (3);
-
+		orgColor = vector <float> (3);
 		random_device rd; //non-deterministic engine, to seed mt engine
 		mt19937 gen(rd()); //mersenne-twister engine
 
 		// coordiantes for center
 		uniform_real_distribution<float> coordinates(-1.0, 1.0); //uniform distribution
-		for (int i = 0 ; i < 2 ; i ++){
+		for (int i = 0 ; i < 3 ; i ++){
 			center[i] = coordinates(gen);
 		}
 
 		// speed in each direction
-		uniform_real_distribution<float> speed(0.0, 0.05); //uniform distribution
-		for (int i = 0 ; i < 2 ; i ++){
+		uniform_real_distribution<float> speed(0.0, 0.02); //uniform distribution
+		for (int i = 0 ; i < 3 ; i ++){
 			vel[i] = speed(gen);
-		} 
+		}
 
 		// vel[1] = 0 ; // for debugging
 		// center[1] = 0.5; // for debugging
@@ -42,7 +44,7 @@ public:
 		}
 
 		// radius
-		rad = 0.2;
+		rad = 0.1;
 
 		// to make sure that ball does not go beyond the boundaries initially (2d boundary)
 		for(int i = 0 ; i < 2 ; i++){
@@ -67,6 +69,9 @@ public:
 		else if(center[2] < -12+rad){
 			center[2] = -12 + rad;
 		}		
+
+		orgColor = color; // to make it back to orig color
+		isWhite = 0; // originally not white
 	}
 
 	ball(float x1, float y1, float z1, float vx, float vy, float vz){
@@ -102,6 +107,46 @@ public:
 		return color;
 	}
 	// setter functions
+	void changeColor(){
+		if(!isWhite){
+			color[0] = 1.0;
+			color[1] = 1.0;
+			color[2] = 1.0;
+			isWhite = 1;
+		}
+		else{
+			color = orgColor;
+			isWhite = 0;
+		}
+	}
+
+	void increaseVal(){
+		float init_speed = mag(vel);
+		if(init_speed < 0.1){
+			vel = mulConst(vel, (init_speed+0.0005)/(init_speed));
+		}
+		// cout << "New Velocity" << mag(vel) << "\n";
+	}
+
+	void decreaseVal(){
+		float init_speed = mag(vel);
+		if(init_speed > 0.001){
+			vel = mulConst(vel, (init_speed-0.0005)/(init_speed));
+		}
+		// cout << "New Velocity" << mag(vel) << "\n";
+	}
+	void increaseRad(){
+		if(rad < 0.15){
+			rad += 0.005;
+		}
+		// cout << "New radius " << rad << "\n";
+	}
+	void decreaseRad(){
+		if(rad > 0.05){
+			rad -= 0.005;
+		}
+	}
+	
 	void setCenter(float x_, float y_, float z_){
 		center[0] = x_;
 		center[1] = y_;

@@ -59,3 +59,27 @@ vector <float> getCommonNormal(vector <float> r1, vector <float> r2){
   }
   return res;
 }
+
+vector <float> RnormalToLine(vector <float> line){
+  vector <float> res(3);
+  res[0] = -1*line[1];
+  res[1] = line[0];
+  res[2] = line[2];
+  return res;
+}
+
+vector <float> LnormalToLine(vector <float> line){
+  vector <float> res(3);
+  res[0] = line[1];
+  res[1] = -1*line[0];
+  res[2] = line[2];
+  return res;
+}
+
+float mag(vector <float> vec){
+  float res = 0;
+  for(int i = 0 ; i < 3 ; i++){
+    res += pow(vec[i], 2);
+  }
+  return sqrt(res);
+}
