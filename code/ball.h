@@ -63,11 +63,11 @@ public:
 		uniform_real_distribution<float> speedZ(0.0, 0.1);
 		vel[2] = speedZ(gen);
 	
-		if(center[2] > -2-rad){
-			center[2] = -2 - rad;
+		if(center[2] > -1-rad){
+			center[2] = -1 - rad;
 		}
-		else if(center[2] < -12+rad){
-			center[2] = -12 + rad;
+		else if(center[2] < -10+rad){
+			center[2] = -10 + rad;
 		}		
 
 		orgColor = color; // to make it back to orig color

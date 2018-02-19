@@ -27,9 +27,9 @@ void reshape(int x, int y){
 
     glMatrixMode(GL_PROJECTION);
 
-    // angle of view: 45 degrees
-    // near clipping plane distance: 0.0
-    // far clipping plane distance: 100.0
+    // angle of view: 60 degrees
+    // near clipping plane distance: 1.0 // > 0 value makes sure that Depth Buffer is enabled
+    // far clipping plane distance: 10.0
     glLoadIdentity();
 
     gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 1.0, 10.0);
