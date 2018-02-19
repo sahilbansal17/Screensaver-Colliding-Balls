@@ -13,6 +13,9 @@ CODEDIR = code
 MAIN_2D = a.out
 MAIN_3D = $(CODEDIR)/a.out
 
+execute:
+	echo "Please type:\nmake execute_2d num_thread=n\nOR\nmake execute_3d num_thread=n"
+
 execute_2d: $(MAIN_2D)
 	./$(MAIN_2D) $(num_thread)
 
