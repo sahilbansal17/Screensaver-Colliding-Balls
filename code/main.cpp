@@ -11,9 +11,13 @@ void init(void){
   glLoadIdentity();
   // initialize clear color
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // R, G, B, Alpha
-  glClearDepth(0.0);
+  // glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
+  // glDepthMask(GL_TRUE);
+  // glDepthRange(0.0f, 1.0f);
   glDepthFunc(GL_LEQUAL);
+  glShadeModel(GL_SMOOTH); // enable smooth shading
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // nice perspective corrections
 }
 
 void reshape(int x, int y){
@@ -23,12 +27,12 @@ void reshape(int x, int y){
 
     glMatrixMode(GL_PROJECTION);
 
-    // angle of view: 60 degrees
+    // angle of view: 45 degrees
     // near clipping plane distance: 0.0
     // far clipping plane distance: 100.0
     glLoadIdentity();
 
-    gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 0.0, 10.0);
+    gluPerspective(60.0, (GLdouble)x/(GLdouble)y, 1.0, 10.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -47,8 +51,6 @@ int main(int argc, char** argv){
 
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); // create double buffer window
  
-  init(); // post window/context creation initialization
-
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   glutInitWindowPosition(SCREEN_X,SCREEN_Y);
   glutCreateWindow("ScreenSaver Colliding Balls");
@@ -59,6 +61,8 @@ int main(int argc, char** argv){
   glutReshapeFunc(reshape); // set reshape function
 
   glutIdleFunc(drawCube); // runs this function continuously
+
+  init(); // post window/context creation initialization
 
   glutMainLoop(); // start glut main loop
 

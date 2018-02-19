@@ -27,6 +27,8 @@ $(MAIN_3D):
 	git checkout 3d_working
 	$(CXX) $(CODEDIR)/main.cpp $(CFLAGS) -o $(MAIN_3D) $(LFLAGS)
 
-clean:
+clean_2d:
 	rm $(MAIN_2D)
+	
+clean_3d:
 	rm $(MAIN_3D)
