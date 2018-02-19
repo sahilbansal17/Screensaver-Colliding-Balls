@@ -64,26 +64,26 @@ public:
 		vel[2] = speedZ(gen);
 	
 		if(center[2] > -1-rad){
-			center[2] = -1 - rad;
+			center[2] = -1-rad;
 		}
 		else if(center[2] < -10+rad){
-			center[2] = -10 + rad;
+			center[2] = -10+rad;
 		}		
 
 		orgColor = color; // to make it back to orig color
 		isWhite = 0; // originally not white
 	}
 
-	ball(float x1, float y1, float z1, float vx, float vy, float vz){
+	ball(float x1, float y1, float z1){
 		center = vector <float> (3);
 		color = vector <float> (3);
 		vel = vector <float> (3);
 		center[0] = x1;
 		center[1] = y1;
 		center[2] = z1;
-		vel[0] = vx;
-		vel[1] = vy;
-		vel[2] = vz;
+		vel[0] = 0;
+		vel[1] = 0;
+		vel[2] = 0;
 		random_device rd; //non-deterministic engine, to seed mt engine
 		mt19937 gen(rd()); //mersenne-twister engine
 		uniform_real_distribution<float> colors(0.0, 1.0); //uniform distribution
@@ -91,7 +91,7 @@ public:
 			color[i] = colors(gen);
 		}
 		// radius
-		rad = 0.1;
+		rad = 0.2;
 	}
 	// getter functions
 	float getRadius(){
@@ -214,5 +214,27 @@ public:
 		// update velocities
 		vel = v1;
 		b2->setVel(v2[0], v2[1], v2[2]);
+	}
+	void updateVelBT(ball* b1){
+		// get the vectors r1 and r2
+		vector <float> r2 = center; // terrain object called
+		vector <float> r1 = b1->getCenter();
+		// get the velocity of moving ball
+		vector <float> u1 = b1->getVel();
+		// common normal of r1,r2
+		vector <float> cn = getCommonNormal(r1, r2);
+
+		// v_f = u1 - 2*(velocity along cn) cn/|cn|
+		float mag_cn = mag(cn);
+
+		float v_cn = dotProd(u1, cn);
+		vector <float> u1Add = mulConst(cn, 2.0*v_cn/mag_cn);
+		vector <float> v1 = diff(u1, u1Add);
+		cout << "Intial speed " << mag(u1) << "\n";
+		cout << "Final speed " << mag(v1) << "\n";
+		
+		// update velocities
+		b1->setVel(v1[0], v1[1], v1[2]);
+		// b1->setVel(0.0, 0.0, 0.0);
 	}
 };

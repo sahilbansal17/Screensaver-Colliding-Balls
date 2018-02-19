@@ -2,6 +2,7 @@
 #include  "terrain.h"
 #include  "pthread_barrier.h"
 #include <vector>
+#include <random>
 #define SCREEN_WIDTH 500
 #define SCREEN_HEIGHT 500
 #define SCREEN_X 500
@@ -11,11 +12,11 @@
 void keyboard(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 ball **b; // double pointer to ball
-// Triangle **t; // to draw triangles
+ball **t; // to draw terrain balls
 // Triangle **t_copy; // to check collisions and keep updating with translating screen
 
 int num_balls; // number of balls
-// int num_tri = 4; // number of triangles
+int num_t; // number of terrain balls
 // pthread_barrier_t barrier; // create pthread barrier
 
 // initialize balls
@@ -27,26 +28,23 @@ void initBalls(int n){
   }
 }
 
-// void initTriangles(){
-//   t = new Triangle*[num_tri];
-//   t_copy = new Triangle*[num_tri];
+void initTerrain(){
+  random_device rd; //non-deterministic engine, to seed mt engine
+  mt19937 gen(rd()); //mersenne-twister engine
+  uniform_real_distribution<float> x(-0.9, 0.9);
+  uniform_real_distribution<float> z(-1.0, -10.0);
+  uniform_int_distribution<int> num(5, 10);
+  num_t = num(gen);
+  t = new ball*[num_t];
+  for(int i = 0 ; i < num_t ; i ++){
+    t[i] = new ball(x(gen), -1.0, z(gen));
+  }
 
-//   // terrain objects
-//   t[0] = new Triangle(-1.0, -1.0, -0.5 , -0.5 ,  0.0, -1.0);
-//   t[1] = new Triangle(-4.0, -1.0, -4.0 , -0.35, -3.5, -1.0);
-//   t[2] = new Triangle(-2.5, -1.0, -2.25,  0.0 , -2.0, -1.0);
-//   t[3] = new Triangle( 0.0, -1.0,  0.5 ,  0.0 ,  1.0, -1.0);
-//   t_copy[0] = new Triangle(-1.0, -1.0, -0.5 , -0.5 ,  0.0, -1.0);
-//   t_copy[1] = new Triangle(-4.0, -1.0, -4.0 , -0.35, -3.5, -1.0);
-//   t_copy[2] = new Triangle(-2.5, -1.0, -2.25,  0.0 , -2.0, -1.0);
-//   t_copy[3] = new Triangle( 0.0, -1.0,  0.5 ,  0.0 ,  1.0, -1.0);
-
-
-//   t_copy[0]->translatePts(4);
-//   t_copy[1]->translatePts(4);
-//   t_copy[2]->translatePts(4);
-//   t_copy[3]->translatePts(4);
-// }
+  // t_copy[0]->translatePts(4);
+  // t_copy[1]->translatePts(4);
+  // t_copy[2]->translatePts(4);
+  // t_copy[3]->translatePts(4);
+}
 
 // function to render ball on screen
 void drawBall(ball *b){
@@ -62,6 +60,7 @@ void drawBall(ball *b){
   glColor3f(color[0], color[1], color[2]); // give color to the sphere
   glutSolidSphere(rad, 50, 50);
   glEnd();
+
 }
 
 // function to control ball coordinates
@@ -133,24 +132,17 @@ void controlBallBall(ball* b1, ball* b2){
   return ;
 }
 
-// void drawTriangle(Triangle *t){
+void controlBallTerrain(ball* b1, ball* b2){
 
+  // check whether collision has occurred
+  bool res = b2->checkBallBall(b1);
 
-//   glBegin(GL_TRIANGLES);
+  if(res == 1){
+    b2->updateVelBT(b1);
+  }
+  return ;
+}
 
-//   glColor3f(0.1f, 1.0f, 0.1f);
-//   vector <float> pt1(3), pt2(3), pt3(3);
-//   pt1 = t->getPt1();
-//   pt2 = t->getPt2();
-//   pt3 = t->getPt3();
-//   glVertex3f(pt1[0], pt1[1], 0.0);
-//   glVertex3f(pt2[0], pt2[1], 0.0);
-//   glVertex3f(pt3[0], pt3[1], 0.0);
-
-//   glEnd();
-// }
-
-// float xR = 0.0;
 bool pause = 0;
 void drawCube(){
 
@@ -176,7 +168,7 @@ void drawCube(){
   glVertex3f(-01.0f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
   glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
   glVertex3f( 01.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)  
-  
+
   glColor3f(1.0f,0.0f,0.0f);  //red
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Front)
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Front)
@@ -203,13 +195,12 @@ void drawCube(){
 
   glEnd();
 
+  // draw the terrain objects
+  for(int i = 0 ; i < num_t ; i ++){
+    drawBall(t[i]);
+  }
+
   if(!pause){
-    // drawTerrain(t_copy, num_tri);
-
-    // for(int i = 0 ; i < num_tri ; i ++){
-    //   drawTriangle(t[i]);
-    // }
-
     vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
     vector <int> bRet(num_balls); // to store values returned by each thread
@@ -226,11 +217,11 @@ void drawCube(){
 
     // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
 
-    // for(int i = 0 ; i < num_balls ; i ++){
-    //   for(int j = 0 ; j < num_tri; j ++){
-    //     controlBallTerrain(b[i], t_copy[j]);
-    //   }
-    // }
+    for(int i = 0 ; i < num_balls ; i ++){
+      for(int j = 0 ; j < num_t; j ++){
+        controlBallTerrain(b[i], t[j]);
+      }
+    }
 
     for(int i = 0 ; i < num_balls ; i ++){
       bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
