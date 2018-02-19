@@ -16,7 +16,7 @@ Triangle **t_copy; // to check collisions and keep updating with translating scr
 
 int num_balls; // number of balls
 int num_tri = 4; // number of triangles
-// pthread_barrier_t barrier; // create pthread barrier
+pthread_mutex_t mut; // create mutex
 
 // initialize balls
 void initBalls(int n){
@@ -89,6 +89,7 @@ void* controlBallWall(void* ballPtr){
   // get radius of the ball
   float rad = b->getRadius();
 
+  pthread_mutex_lock(&mut);
   // to make sure that ball does not go beyond the boundaries initially - x direction
   if(center[0] > 1-rad){
     center[0] = 1 - rad;
@@ -119,50 +120,30 @@ void* controlBallWall(void* ballPtr){
     vel[1] = -1*vel[1];
   }
 
-  // pthread_barrier_wait(&barrier);
-
   //update the center of the balls
   b->setCenter(center[0], center[1], center[2]);
   // update the velocities of the balls if req
   b->setVel(vel[0], vel[1], vel[2]);
   // b->printCenter();
+  pthread_mutex_unlock(&mut);
 }
 
 void controlBallBall(ball* b1, ball* b2){
 
+  pthread_mutex_lock(&mut);
   // check whether collision has occurred
   bool res = b1->checkBallBall(b2);
-
   if(res == 1){
-    // balls have collided
-    // udpate their velocities
-
-    // cout << "Balls collide.\n";
-    // cout << "Intial:\n";
-    // vector <float> c1 = b1->getCenter(), c2 = b2->getCenter();
-    // vector <float> u1 = b1->getVel(), u2 = b2->getVel();
-    // for(int i = 0 ; i < 2 ; i ++){
-    //   cout << "x_1_" << i << " " << c1[i] << "\n";
-    //   cout << "x_2_" << i << " " << c2[i] << "\n";
-    //   cout << "u_1_" << i << " " << u1[i] << "\n";
-    //   cout << "u_2_" << i << " " << u2[i] << "\n";
-    // }
-
     b1->updateVel(b2);
-
-    // cout << "Final:\n";
-    // vector <float> v1 = b1->getVel(), v2 = b2->getVel();
-    // for(int i = 0 ; i < 3 ; i ++){
-    //   cout << "v_1_" << i << " " << v1[i] << "\n";
-    //   cout << "v_2_" << i << " " << v2[i] << "\n";
-    // }
   }
+  pthread_mutex_unlock(&mut);
   return ;
 }
 
 void controlBallTerrain(ball *b, Triangle *t){
     // assuming one terrain object
 
+    pthread_mutex_lock(&mut);
     vector <float> center = b->getCenter();
     vector <float> vel = b->getVel();
     float rad = b->getRadius();
@@ -203,6 +184,7 @@ void controlBallTerrain(ball *b, Triangle *t){
         // set the center so that ball do not stick to triangle
         vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), 0.001+rad-dist_check));
         b->setCenter(c_new[0], c_new[1], c_new[2]);
+        pthread_mutex_unlock(&mut);
         return;
       }
     }
@@ -221,6 +203,7 @@ void controlBallTerrain(ball *b, Triangle *t){
       float projOnLine = dotProd(diff(p2, center), line);
 
       if(projOnLine < 0){
+        pthread_mutex_unlock(&mut);
         return;
       }
 
@@ -238,6 +221,7 @@ void controlBallTerrain(ball *b, Triangle *t){
       vector <float> c_new = add(center, mulConst(mulConst(norm, 1/norm_mag), 0.001+rad-dist_check));
       b->setCenter(c_new[0], c_new[1], c_new[2]);
     }
+    pthread_mutex_unlock(&mut);
 }
 
 void drawTriangle(Triangle *t){
@@ -273,7 +257,7 @@ void drawCube(){
 
   vector <int> bRet(num_balls); // to store values returned by each thread
 
-  // pthread_barrier_init(&barrier, 0, num_balls);
+  pthread_mutex_init(&mut, 0);
 
   // check for ball to ball collsions and update velocities
   // also makes sure that initially no two balls are generated at same place
@@ -298,7 +282,6 @@ void drawCube(){
     pthread_join(balls[i], NULL);
 
   }
-  // pthread_barrier_destroy(&barrier);
 
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
@@ -307,6 +290,7 @@ void drawCube(){
   glutSwapBuffers();
   glutKeyboardFunc(keyboard);
   glutSpecialFunc(specialKey);
+  pthread_mutex_destroy(&mut);
 }
 
 int ballSelected = -1;
