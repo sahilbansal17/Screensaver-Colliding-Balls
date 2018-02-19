@@ -5,6 +5,16 @@
 #endif
 #include "screen.h"
 
+// set lighting intensity and color
+GLfloat AmbientLight[] = {0.2, 0.2, 0.2, 1.0};
+GLfloat DiffuseLight[] = {0.8, 0.8, 0.8, 1.0};
+GLfloat SpecularLight[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat emitLight[] = {0.9, 0.9, 0.9, 0.01};
+GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0};
+
+// light source position
+GLfloat LightPosition[] = {0.5, 0, -3.5, 0.5};
+
 void init(void){ 
   // initialize projection matrix
   glMatrixMode(GL_PROJECTION);
@@ -18,6 +28,18 @@ void init(void){
   glDepthFunc(GL_LEQUAL);
   glShadeModel(GL_SMOOTH); // enable smooth shading
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // nice perspective corrections
+}
+
+void initLighting(){
+  // enable lighting
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  // set lighting intensity and color
+  glLightfv(GL_LIGHT0, GL_AMBIENT, AmbientLight);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, DiffuseLight);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, SpecularLight);
+  // set the light position
+  glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
 }
 
 void reshape(int x, int y){
@@ -55,6 +77,8 @@ int main(int argc, char** argv){
   glutInitWindowPosition(SCREEN_X,SCREEN_Y);
   glutCreateWindow("ScreenSaver Colliding Balls");
   // glutFullScreen(); // make the window full screen
+
+  initLighting();
 
   glutDisplayFunc(drawCube); // set rendering function
 

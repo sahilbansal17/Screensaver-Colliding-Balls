@@ -28,10 +28,10 @@ void drawTerrain(ball** t, int n){
   glBegin(GL_QUADS);
 
   glColor3f(0.0f,1.0f,0.0f); // green    
-  glVertex3f( 05.0f,-01.0f, 05.0f);    // Top Right Of The Quad (Bottom)
-  glVertex3f(-05.0f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
-  glVertex3f(-05.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
-  glVertex3f( 05.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)  
+  glVertex3f( 05.5f,-01.0f, 05.0f);    // Top Right Of The Quad (Bottom)
+  glVertex3f(-05.5f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
+  glVertex3f(-05.5f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
+  glVertex3f( 05.5f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)  
 
   glEnd();
 
