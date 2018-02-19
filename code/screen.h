@@ -31,19 +31,15 @@ void initBalls(int n){
 void initTerrain(){
   random_device rd; //non-deterministic engine, to seed mt engine
   mt19937 gen(rd()); //mersenne-twister engine
-  uniform_real_distribution<float> x(-0.9, 0.9);
+  uniform_real_distribution<float> x(-4.0, 4.0);
   uniform_real_distribution<float> z(-1.0, -10.0);
-  uniform_int_distribution<int> num(5, 10);
+  uniform_int_distribution<int> num(20, 40);
   num_t = num(gen);
   t = new ball*[num_t];
   for(int i = 0 ; i < num_t ; i ++){
     t[i] = new ball(x(gen), -1.0, z(gen));
+    t[i]->updateCenter(4.0, 0.0, 0.0);
   }
-
-  // t_copy[0]->translatePts(4);
-  // t_copy[1]->translatePts(4);
-  // t_copy[2]->translatePts(4);
-  // t_copy[3]->translatePts(4);
 }
 
 // function to render ball on screen
@@ -157,18 +153,12 @@ void drawCube(){
   // xR += 0.1;
   glBegin(GL_QUADS);
    
-  glColor3f(0.0f,1.0f,0.0f); // green   
+  glColor3f(1.0f,0.5f,0.0f); // orange   
   glVertex3f( 01.0f, 01.0f,-05.0f);    // Top Right Of The Quad (Top)
   glVertex3f(-01.0f, 01.0f,-05.0f);    // Top Left Of The Quad (Top)
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Bottom Left Of The Quad (Top)
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Bottom Right Of The Quad (Top)
  
-  glColor3f(1.0f,0.5f,0.0f); // orange    
-  glVertex3f( 01.0f,-01.0f, 05.0f);    // Top Right Of The Quad (Bottom)
-  glVertex3f(-01.0f,-01.0f, 05.0f);    // Top Left Of The Quad (Bottom)
-  glVertex3f(-01.0f,-01.0f,-05.0f);    // Bottom Left Of The Quad (Bottom)
-  glVertex3f( 01.0f,-01.0f,-05.0f);    // Bottom Right Of The Quad (Bottom)  
-
   glColor3f(1.0f,0.0f,0.0f);  //red
   glVertex3f( 01.0f, 01.0f, 05.0f);    // Top Right Of The Quad (Front)
   glVertex3f(-01.0f, 01.0f, 05.0f);    // Top Left Of The Quad (Front)
@@ -195,6 +185,7 @@ void drawCube(){
 
   glEnd();
 
+  drawTerrain(t, num_t); // updates the frame
   // draw the terrain objects
   for(int i = 0 ; i < num_t ; i ++){
     drawBall(t[i]);

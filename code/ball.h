@@ -146,7 +146,11 @@ public:
 			rad -= 0.005;
 		}
 	}
-	
+	void updateCenter(float x, float y, float z){
+		center[0] += x;
+		center[1] += y;
+		center[2] += z;
+	}
 	void setCenter(float x_, float y_, float z_){
 		center[0] = x_;
 		center[1] = y_;
@@ -230,8 +234,8 @@ public:
 		float v_cn = dotProd(u1, cn);
 		vector <float> u1Add = mulConst(cn, 2.0*v_cn/mag_cn);
 		vector <float> v1 = diff(u1, u1Add);
-		cout << "Intial speed " << mag(u1) << "\n";
-		cout << "Final speed " << mag(v1) << "\n";
+		// cout << "Intial speed " << mag(u1) << "\n";
+		// cout << "Final speed " << mag(v1) << "\n";
 		
 		// update velocities
 		b1->setVel(v1[0], v1[1], v1[2]);
