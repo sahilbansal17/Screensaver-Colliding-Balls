@@ -151,6 +151,7 @@ void controlBallBall(ball* b1, ball* b2){
 // }
 
 // float xR = 0.0;
+bool pause = 0;
 void drawCube(){
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the buffer
@@ -202,47 +203,47 @@ void drawCube(){
 
   glEnd();
 
-  // drawTerrain(t_copy, num_tri);
+  if(!pause){
+    // drawTerrain(t_copy, num_tri);
 
-  // for(int i = 0 ; i < num_tri ; i ++){
-  //   drawTriangle(t[i]);
-  // }
+    // for(int i = 0 ; i < num_tri ; i ++){
+    //   drawTriangle(t[i]);
+    // }
 
-  vector <pthread_t> balls(num_balls); // create n threads, one for each ball
+    vector <pthread_t> balls(num_balls); // create n threads, one for each ball
 
-  vector <int> bRet(num_balls); // to store values returned by each thread
+    vector <int> bRet(num_balls); // to store values returned by each thread
 
-  // pthread_barrier_init(&barrier, 0, num_balls);
+    // pthread_barrier_init(&barrier, 0, num_balls);
 
-  // check for ball to ball collsions and update velocities
-  // also makes sure that initially no two balls are generated at same place
-  for(int i = 0 ; i < num_balls ; i ++){
-    for (int j = i+1; j < num_balls; j++){
-      controlBallBall(b[i], b[j]);
+    // check for ball to ball collsions and update velocities
+    // also makes sure that initially no two balls are generated at same place
+    for(int i = 0 ; i < num_balls ; i ++){
+      for (int j = i+1; j < num_balls; j++){
+        controlBallBall(b[i], b[j]);
+      }
     }
+
+    // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
+
+    // for(int i = 0 ; i < num_balls ; i ++){
+    //   for(int j = 0 ; j < num_tri; j ++){
+    //     controlBallTerrain(b[i], t_copy[j]);
+    //   }
+    // }
+
+    for(int i = 0 ; i < num_balls ; i ++){
+      bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
+      // controlBallWall checks for ball to wall collisions and updates the coordinates
+
+      pthread_join(balls[i], NULL);
+
+    }
+    // pthread_barrier_destroy(&barrier);
   }
-
-  // need to check for collisions between ball and the terrain before calling controlBallWall so that ball parameters get updated when collide with terrain object
-
-  // for(int i = 0 ; i < num_balls ; i ++){
-  //   for(int j = 0 ; j < num_tri; j ++){
-  //     controlBallTerrain(b[i], t_copy[j]);
-  //   }
-  // }
-
-  for(int i = 0 ; i < num_balls ; i ++){
-    bRet[i] = pthread_create(&balls[i], NULL, &controlBallWall, (void*)b[i]); // create a thread
-    // controlBallWall checks for ball to wall collisions and updates the coordinates
-
-    pthread_join(balls[i], NULL);
-
-  }
-  // pthread_barrier_destroy(&barrier);
-
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
   }
-  
   glutSwapBuffers();
   glutKeyboardFunc(keyboard);
   glutSpecialFunc(specialKey);
@@ -264,6 +265,9 @@ void keyboard(unsigned char key, int x, int y){
       glutPositionWindow(SCREEN_X, SCREEN_Y);
       glutReshapeWindow(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
+  }
+  else if(key == ' '){
+    pause = !pause;
   }
   // for keys 0 to 9 give the option of selecting the ball
   int ball_id = key - 48;
