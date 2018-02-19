@@ -23,7 +23,7 @@ ball **t; // to draw terrain balls
 
 int num_balls; // number of balls
 int num_t; // number of terrain balls
-// pthread_barrier_t barrier; // create pthread barrier
+pthread_mutex_t mut; // create mutex
 
 // initialize balls
 void initBalls(int n){
@@ -85,6 +85,7 @@ void* controlBallWall(void* ballPtr){
   // get radius of the ball
   float rad = b->getRadius();
 
+  pthread_mutex_lock(&mut);
   // to make sure that ball does not go beyond the boundaries initially (2d boundary)
   for(int i = 0 ; i < 2 ; i++){
     if(center[i] > 1-rad){
@@ -126,28 +127,32 @@ void* controlBallWall(void* ballPtr){
   // update the velocities of the balls if req
   b->setVel(vel[0], vel[1], vel[2]);
   // b->printCenter();
+   pthread_mutex_unlock(&mut);
 }
 
 
 void controlBallBall(ball* b1, ball* b2){
 
+   pthread_mutex_lock(&mut);
   // check whether collision has occurred
   bool res = b1->checkBallBall(b2);
 
   if(res == 1){
     b1->updateVel(b2);
   }
+  pthread_mutex_unlock(&mut);
   return ;
 }
 
 void controlBallTerrain(ball* b1, ball* b2){
-
+  pthread_mutex_lock(&mut);
   // check whether collision has occurred
   bool res = b2->checkBallBall(b1);
 
   if(res == 1){
     b2->updateVelBT(b1);
   }
+  pthread_mutex_unlock(&mut);
   return ;
 }
 
@@ -208,7 +213,7 @@ void drawCube(){
 
     vector <int> bRet(num_balls); // to store values returned by each thread
 
-    // pthread_barrier_init(&barrier, 0, num_balls);
+    pthread_mutex_init(&mut, 0);
 
     // check for ball to ball collsions and update velocities
     // also makes sure that initially no two balls are generated at same place
@@ -233,7 +238,6 @@ void drawCube(){
       pthread_join(balls[i], NULL);
 
     }
-    // pthread_barrier_destroy(&barrier);
   }
   for(int i = 0 ; i < num_balls ; i++){
     drawBall(b[i]);
@@ -241,6 +245,7 @@ void drawCube(){
   glutSwapBuffers();
   glutKeyboardFunc(keyboard);
   glutSpecialFunc(specialKey);
+  pthread_mutex_destroy(&mut);
 }
 
 int ballSelected = -1;
