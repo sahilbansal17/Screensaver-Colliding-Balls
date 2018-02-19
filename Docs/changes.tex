@@ -1,0 +1,49 @@
+\documentclass[]{article}
+\usepackage[left=0.7in,right=0.7in,top=0.9in,bottom=0.5in]{geometry}
+
+%opening
+\title{\textbf{COP290 : Assignment 1 \\ Changes File}}
+\author{Sahil Bansal (2016CSJ0008) \& Sahil Singh(2016CSJ0025)}
+
+\begin{document}
+
+\maketitle
+
+\section{\LARGE Overall Design :}
+\Large
+We followed the same overall design as mentioned in the design document.
+
+\section{\LARGE Sub-Components :}
+
+\subsection{GUI :}
+\Large It does not include \textbf{slider} to update the speed of the balls as mentioned earlier instead keyboard input is taken since that is easier to implement.
+
+\subsection{Balls :}
+\Large The mass of the balls is now assumed to be constant for simplicity.
+
+\subsection{Physics :}
+\Large The physics is handled as mentioned in the design document.
+
+\section{\LARGE Sub-Component Interaction :}
+\subsection{Interaction between ball and terrain :} 
+\Large
+This portion was not mentioned earlier. We now have a \textbf{triangular terrain} in the 2D and \textbf{spherical obstacles} act as terrain in 3D. 
+
+\section{\LARGE Thread Interaction :}
+\Large In all the functions that check for collision between ball and another ball or wall or terrain and then update the speed and position of ball, a \textbf{mutex lock} has been introduced and barrier mode of communication is no longer used since mutex is more efficient way of handling thread synchronization.
+
+\section{\LARGE Variable Ball Speeds :}
+\Large Balls are selected only through numbers from 0 to 9 on the keyboard and only the first 10 balls can be selected. Mouse input is not taken for the sake of simplicity as ball will be moving and it would become difficult to keep track. Similarly, no slider is made, instead \textbf{+} and \textbf{-} keys are used to update speed.  
+
+\section{\LARGE Additional Features :}
+\Large The idea to display the average no. of collisions per second is dropped. The additional features provided now include : 
+\begin{itemize}
+	\item Toggling between full screen mode.
+	\item Pausing the balls at an instant of time.
+	\item Increasing/decreasing the radius of the ball.
+	\item Switching between the 2D and 3D mode using command in the terminal.
+	
+\end{itemize}
+
+\end{document}
+

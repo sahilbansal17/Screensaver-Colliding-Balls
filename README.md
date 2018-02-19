@@ -30,6 +30,11 @@ To use the 3D mode, type the following command :
 ```make execute_3d num_thread=n```
 where n = number of balls.
 
+To recompile and create fresh executable :
+```make clean_2d```
+OR
+```make clean_3d```
+
 ## Keyboard controls
 
 The following keyboard controls are provided:
@@ -46,16 +51,16 @@ The following keyboard controls are provided:
 # Code Structure
 (generated using Sourcetrail)
 ## Files structure
-![](/Images/Files.png)
+![](Images/Files.png)
 ## Functions in all files
-![](/Images/Functions.png)
+![](Images/Functions.png)
 ## Ball class along with functions linked from other files
-![](/Images/Ball.png)
+![](Images/Ball.png)
 ## Triangle class (2D mode)
-![](/Images/Triangle.png)
+![](Images/Triangle.png)
 
 ***
 # Working Snapshots
-* **2D Mode** : ![](/Images/2D.png)
+* **2D Mode** : ![](Images/2D.png)
 
-* **3D Mode** : ![](/Images/3D.png)
+* **3D Mode** : ![](Images/3D.png)
