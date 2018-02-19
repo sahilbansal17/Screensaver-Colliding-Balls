@@ -18,13 +18,14 @@ The file ***pthread_barrier.h*** is used to include the pthread header file in t
 
 For **testing** purpose, a file **testBallBall.cpp** contains a few test cases to verify that ball to ball collision is working properly.
 
-The entire project was done using **Git** version control and all the commits and logs can easily be checked using git commands. There are two branches, **master** branch contains the code for 2D mode
+The entire project was done using **Git** version control and all the commits and logs can easily be checked using git commands. There are two branches, **master** branch contains the code for 2D mode and the **3d_working** branch which contains the code for 3D mode.
 
 ***
 
 # How to use
 
 To use the 2D mode, type the following command : ```make execute_2d num_thread=n```
+
 To use the 3D mode, type the following command :
 ```make execute_3d num_thread=n```
 where n = number of balls.
@@ -52,3 +53,9 @@ The following keyboard controls are provided:
 ![](/Images/Ball.png)
 ## Triangle class (2D mode)
 ![](/Images/Triangle.png)
+
+***
+# Working Snapshots
+* **2D Mode** : ![](/Images/2D.png)
+
+* **3D Mode** : ![](/Images/3D.png)
